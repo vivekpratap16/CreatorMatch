@@ -6,29 +6,54 @@
     <title>Setup Profile - CreatorMatch</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
-        body { font-family: 'Inter', sans-serif; }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; background-color: #f8fafc; }
+        
+        .blob {
+            position: fixed; filter: blur(80px); z-index: -1; opacity: 0.5;
+            animation: float 10s infinite ease-in-out alternate;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px) scale(1); }
+            100% { transform: translateY(-50px) scale(1.1); }
+        }
+        .premium-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+        .text-gradient {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
     </style>
 </head>
-<body class="bg-gray-50 flex items-center justify-center min-h-screen p-4 py-10">
+<body class="flex flex-col items-center justify-center min-h-screen relative p-4 py-12">
 
-    <div class="bg-white max-w-2xl w-full rounded-3xl shadow-lg border border-gray-100 p-8">
-        
-        <div class="text-center mb-8">
-            <h1 class="text-3xl font-extrabold text-gray-900">Build Your Portfolio</h1>
-            <p class="text-gray-500 text-sm mt-2">Add your social links, bio, and a video to stand out to brands!</p>
-        </div>
+    <!-- Animated Background Blobs -->
+    <div class="blob bg-blue-300 w-96 h-96 rounded-full top-[-10%] left-[-10%]"></div>
+    <div class="blob bg-purple-300 w-96 h-96 rounded-full bottom-[-10%] right-[-10%]" style="animation-delay: 3s;"></div>
 
-        <form class="space-y-5" id="setup-form">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+    <div class="text-center mb-8 relative z-10">
+        <h2 class="text-2xl font-extrabold text-gradient mb-1 tracking-tight">CreatorMatch.</h2>
+        <h1 class="text-4xl font-extrabold text-gray-900">Build Your Portfolio ✨</h1>
+        <p class="text-gray-500 font-semibold mt-2">Add your social links, bio, and a video to stand out!</p>
+    </div>
+
+    <div class="premium-card max-w-2xl w-full p-10 relative z-10">
+        <form class="space-y-6" id="setup-form">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Display Name *</label>
-                    <input type="text" id="c-name" required placeholder="e.g. Rahul Tech" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition">
+                    <label class="block text-sm font-extrabold text-gray-700 mb-2 uppercase tracking-wide">Display Name *</label>
+                    <input type="text" id="c-name" required placeholder="e.g. Rahul Tech" class="w-full px-5 py-4 bg-white border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition text-sm font-bold shadow-sm">
                 </div>
-
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Niche / Category *</label>
-                    <select id="c-category" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition cursor-pointer">
+                    <label class="block text-sm font-extrabold text-gray-700 mb-2 uppercase tracking-wide">Niche / Category *</label>
+                    <select id="c-category" class="w-full px-5 py-4 bg-white border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition text-sm font-bold shadow-sm cursor-pointer">
                         <option value="Tech & Gadgets">Tech & Gadgets</option>
                         <option value="Fashion & Lifestyle">Fashion & Lifestyle</option>
                         <option value="Gaming">Gaming</option>
@@ -38,71 +63,57 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Total Followers *</label>
-                    <input type="number" id="c-followers" required placeholder="e.g. 50000" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition">
+                    <label class="block text-sm font-extrabold text-gray-700 mb-2 uppercase tracking-wide">Total Followers *</label>
+                    <input type="number" id="c-followers" required placeholder="e.g. 50000" class="w-full px-5 py-4 bg-white border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition text-sm font-bold shadow-sm">
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Profile Photo URL *</label>
-                    <input type="text" id="c-image" required placeholder="Paste an image link here" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition">
+                    <label class="block text-sm font-extrabold text-gray-700 mb-2 uppercase tracking-wide">Profile Photo URL *</label>
+                    <input type="text" id="c-image" required placeholder="Paste an image link here" class="w-full px-5 py-4 bg-white border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition text-sm font-bold shadow-sm">
                 </div>
             </div>
 
             <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-1">About You (Bio)</label>
-                <textarea id="c-bio" rows="3" placeholder="Tell brands about your content style..." class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition"></textarea>
+                <label class="block text-sm font-extrabold text-gray-700 mb-2 uppercase tracking-wide">About You (Bio)</label>
+                <textarea id="c-bio" rows="3" placeholder="Tell brands about your content style..." class="w-full px-5 py-4 bg-white border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition text-sm font-bold shadow-sm"></textarea>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Instagram Link</label>
-                    <input type="url" id="c-instagram" placeholder="https://instagram.com/yourprofile" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-pink-500 transition">
+                    <label class="block text-sm font-extrabold text-gray-700 mb-2 uppercase tracking-wide">Instagram Link</label>
+                    <input type="url" id="c-instagram" placeholder="https://instagram.com/yourprofile" class="w-full px-5 py-4 bg-white border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-pink-500/50 transition text-sm font-bold shadow-sm">
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">LinkedIn Link</label>
-                    <input type="url" id="c-linkedin" placeholder="https://linkedin.com/in/yourprofile" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-600 transition">
+                    <label class="block text-sm font-extrabold text-gray-700 mb-2 uppercase tracking-wide">LinkedIn Link</label>
+                    <input type="url" id="c-linkedin" placeholder="https://linkedin.com/in/yourprofile" class="w-full px-5 py-4 bg-white border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition text-sm font-bold shadow-sm">
                 </div>
             </div>
             
             <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-1">YouTube Video Link (Showcase)</label>
-                <input type="url" id="c-video" placeholder="e.g. https://www.youtube.com/watch?v=XYZ123" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-red-500 transition">
+                <label class="block text-sm font-extrabold text-gray-700 mb-2 uppercase tracking-wide">YouTube Video Link</label>
+                <input type="url" id="c-video" placeholder="e.g. https://www.youtube.com/watch?v=XYZ123" class="w-full px-5 py-4 bg-white border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-red-500/50 transition text-sm font-bold shadow-sm">
             </div>
 
-            <button type="submit" id="save-btn" class="w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold rounded-xl hover:opacity-90 transition shadow-lg mt-6 text-lg">
-                Save Complete Profile
+            <button type="submit" id="save-btn" class="w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-extrabold rounded-2xl hover:shadow-lg hover:shadow-purple-500/30 transform hover:-translate-y-0.5 transition-all duration-300 text-lg mt-8">
+                Save & Launch Profile
             </button>
         </form>
     </div>
 
+    <!-- Firebase Script -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
         import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js"; 
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyACcJOwTJrBKKbE56gLtsE8U2JD2VxBIiQ",
-            authDomain: "creatormatch-7c723.firebaseapp.com",
-            projectId: "creatormatch-7c723",
-            storageBucket: "creatormatch-7c723.firebasestorage.app",
-            messagingSenderId: "62514210796",
-            appId: "1:62514210796:web:478775e3e03726693382c9",
-            measurementId: "G-0VN4N73DP1"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+        const firebaseConfig = { apiKey: "AIzaSyACcJOwTJrBKKbE56gLtsE8U2JD2VxBIiQ", authDomain: "creatormatch-7c723.firebaseapp.com", projectId: "creatormatch-7c723", storageBucket: "creatormatch-7c723.firebasestorage.app", messagingSenderId: "62514210796", appId: "1:62514210796:web:478775e3e03726693382c9" };
+        const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
 
         let currentUser = null;
-
         onAuthStateChanged(auth, (user) => {
-            if (user) {
-                currentUser = user;
-            } else {
-                window.location.href = "auth.html";
-            }
+            if (user) currentUser = user;
+            else window.location.href = "auth.html";
         });
 
         const setupForm = document.getElementById("setup-form");
@@ -112,40 +123,24 @@
             e.preventDefault();
             if (!currentUser) return;
 
-            // NAYA: Saare naye fields ka data nikalo
-            const name = document.getElementById("c-name").value;
-            const category = document.getElementById("c-category").value;
-            const followers = parseInt(document.getElementById("c-followers").value);
-            const imageUrl = document.getElementById("c-image").value;
-            const bio = document.getElementById("c-bio").value || "No bio provided.";
-            const instagram = document.getElementById("c-instagram").value || "";
-            const linkedin = document.getElementById("c-linkedin").value || "";
-            const video = document.getElementById("c-video").value || "";
-
-            saveBtn.innerText = "Saving Profile...";
-            saveBtn.disabled = true;
+            saveBtn.innerText = "Saving Profile..."; saveBtn.disabled = true;
 
             try {
-                // Database mein saari naye details save karo
                 await setDoc(doc(db, "creators", currentUser.uid), {
-                    name: name,
-                    category: category,
-                    followers: followers,
-                    imageUrl: imageUrl,
-                    bio: bio,
-                    instagram: instagram,
-                    linkedin: linkedin,
-                    video: video,
+                    name: document.getElementById("c-name").value,
+                    category: document.getElementById("c-category").value,
+                    followers: parseInt(document.getElementById("c-followers").value),
+                    imageUrl: document.getElementById("c-image").value,
+                    bio: document.getElementById("c-bio").value || "No bio provided.",
+                    instagram: document.getElementById("c-instagram").value || "",
+                    linkedin: document.getElementById("c-linkedin").value || "",
+                    video: document.getElementById("c-video").value || "",
                     uid: currentUser.uid
                 });
-
-                alert("Profile Updated Successfully!");
-                window.location.href = "dashboard.html";
-
+                alert("Profile Updated Successfully!"); window.location.href = "dashboard.html";
             } catch (error) {
                 alert("Error saving profile: " + error.message);
-                saveBtn.innerText = "Save Complete Profile";
-                saveBtn.disabled = false;
+                saveBtn.innerText = "Save & Launch Profile"; saveBtn.disabled = false;
             }
         });
     </script>
