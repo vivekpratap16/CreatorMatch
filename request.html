@@ -6,62 +6,75 @@
     <title>My Requests - CreatorMatch</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
-        body { font-family: 'Inter', sans-serif; }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #f8fafc;
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+        .text-gradient {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .premium-card {
+            background: white;
+            border-radius: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        .premium-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.1);
+            border-color: rgba(139, 92, 246, 0.3);
+        }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800">
+<body class="text-gray-800 relative min-h-screen">
 
-    <header class="flex justify-between items-center py-4 px-8 bg-white shadow-sm border-b border-gray-100">
-        <div class="text-2xl font-extrabold text-blue-600 tracking-tight">
-            <a href="index.html">CreatorMatch</a>
+    <!-- Header (Glassmorphism) -->
+    <header class="flex justify-between items-center py-5 px-8 bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-100 sticky top-0 z-40">
+        <div class="text-2xl font-extrabold text-gradient tracking-tight cursor-pointer hover:opacity-80 transition">
+            <a href="index.html">CreatorMatch.</a>
         </div>
         <div class="flex items-center space-x-6">
-            <a href="dashboard.html" class="text-gray-600 font-semibold hover:text-blue-600 transition">← Back to Dashboard</a>
+            <a href="dashboard.html" class="text-gray-600 font-bold hover:text-blue-600 transition flex items-center gap-2">
+                <span>←</span> Back to Dashboard
+            </a>
         </div>
     </header>
 
-    <main class="max-w-5xl mx-auto mt-10 px-4 mb-20">
-        <h1 class="text-3xl font-extrabold text-gray-900 mb-2" id="page-title">My Requests</h1>
-        <p class="text-gray-500 mb-8 font-semibold" id="page-subtitle">Loading your requests...</p>
+    <main class="max-w-4xl mx-auto mt-12 px-4 mb-20">
+        <div class="mb-10 text-center md:text-left">
+            <h1 class="text-4xl font-extrabold text-gray-900 tracking-tight mb-2" id="page-title">Collaboration Requests</h1>
+            <p class="text-gray-500 font-semibold text-lg" id="page-subtitle">Loading your request history...</p>
+        </div>
 
-        <div id="requests-list" class="space-y-4">
-            <p class="text-gray-500 text-center py-10 font-semibold animate-pulse">Fetching data...</p>
+        <!-- Requests List -->
+        <div id="requests-list" class="space-y-6">
+            <div class="text-center py-20">
+                <div class="inline-block w-10 h-10 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin mb-4"></div>
+                <p class="text-gray-500 font-bold">Fetching your requests...</p>
+            </div>
         </div>
     </main>
 
+    <!-- Firebase Scripts -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
-        // NAYA: 'updateDoc' import kiya taaki document ka status badal sakein
         import { getFirestore, collection, query, where, getDocs, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js"; 
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyACcJOwTJrBKKbE56gLtsE8U2JD2VxBIiQ",
-            authDomain: "creatormatch-7c723.firebaseapp.com",
-            projectId: "creatormatch-7c723",
-            storageBucket: "creatormatch-7c723.firebasestorage.app",
-            messagingSenderId: "62514210796",
-            appId: "1:62514210796:web:478775e3e03726693382c9",
-            measurementId: "G-0VN4N73DP1"
-        };
+        const firebaseConfig = { apiKey: "AIzaSyACcJOwTJrBKKbE56gLtsE8U2JD2VxBIiQ", authDomain: "creatormatch-7c723.firebaseapp.com", projectId: "creatormatch-7c723", storageBucket: "creatormatch-7c723.firebasestorage.app", messagingSenderId: "62514210796", appId: "1:62514210796:web:478775e3e03726693382c9" };
+        const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        // 1. User check karo aur uska Role pata lagao
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                // Database se user ki details nikalo (Business hai ya Creator)
                 const userDoc = await getDoc(doc(db, "users", user.uid));
-                if (userDoc.exists()) {
-                    const role = userDoc.data().role;
-                    loadMyRequests(user.uid, role);
-                }
-            } else {
-                window.location.href = "auth.html";
-            }
+                if (userDoc.exists()) loadMyRequests(user.uid, userDoc.data().role);
+            } else window.location.href = "auth.html";
         });
 
         async function loadMyRequests(userId, role) {
@@ -72,112 +85,98 @@
             try {
                 let q;
                 if (role === 'business') {
-                    pageTitle.innerText = "Sent Requests";
-                    pageSubtitle.innerText = "Creators you have reached out to.";
-                    // Business ke liye: Jo requests usne bheji hain
+                    pageTitle.innerText = "Sent Requests 🚀";
+                    pageSubtitle.innerText = "Creators you've pitched for collaborations.";
                     q = query(collection(db, "requests"), where("businessId", "==", userId));
                 } else {
-                    pageTitle.innerText = "Received Requests";
-                    pageSubtitle.innerText = "Brands that want to collaborate with you.";
-                    // Creator ke liye: Jo requests usko aayi hain
+                    pageTitle.innerText = "Brand Inquiries 📩";
+                    pageSubtitle.innerText = "Brands that want to work with you.";
                     q = query(collection(db, "requests"), where("creatorId", "==", userId));
                 }
 
-                const querySnapshot = await getDocs(q);
-                listContainer.innerHTML = ""; 
+                const querySnapshot = await getDocs(q); listContainer.innerHTML = ""; 
 
                 if (querySnapshot.empty) {
-                    listContainer.innerHTML = `<div class="bg-white p-10 rounded-2xl text-center border border-gray-100 shadow-sm"><h3 class="text-xl font-bold text-gray-800">No requests found!</h3></div>`;
+                    listContainer.innerHTML = `
+                        <div class="premium-card p-12 text-center">
+                            <div class="text-5xl mb-4">📭</div>
+                            <h3 class="text-2xl font-extrabold text-gray-900 mb-2">No requests found!</h3>
+                            <p class="text-gray-500 font-semibold mb-6">Looks like it's a bit quiet here. Explore the dashboard to make moves.</p>
+                            <a href="dashboard.html" class="bg-gray-900 text-white px-8 py-3 rounded-xl font-bold hover:bg-gray-800 transition shadow-lg">Go to Dashboard</a>
+                        </div>`;
                     return;
                 }
 
-                // Ek-ek request ko screen par dikhao
                 querySnapshot.forEach(async (requestDoc) => {
-                    const requestData = requestDoc.data();
-                    const requestId = requestDoc.id; // Request ki unique ID
+                    const requestData = requestDoc.data(); const requestId = requestDoc.id;
                     
                     if (role === 'business') {
-                        // --- BUSINESS KA VIEW ---
                         const creatorSnap = await getDoc(doc(db, "creators", requestData.creatorId));
                         if (creatorSnap.exists()) {
                             const creator = creatorSnap.data();
                             
-                            // Status ke hisaab se rang decide karo
-                            let statusColor = "bg-yellow-100 text-yellow-700"; // Pending
-                            if(requestData.status === "Accepted") statusColor = "bg-green-100 text-green-700";
-                            if(requestData.status === "Rejected") statusColor = "bg-red-100 text-red-700";
+                            let statusBadge = `<span class="bg-yellow-100 text-yellow-700 ring-1 ring-yellow-600/20 px-4 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-widest shadow-sm">⏳ ${requestData.status}</span>`;
+                            if(requestData.status === "Accepted") statusBadge = `<span class="bg-green-100 text-green-700 ring-1 ring-green-600/20 px-4 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-widest shadow-sm">✅ ${requestData.status}</span>`;
+                            if(requestData.status === "Rejected") statusBadge = `<span class="bg-red-100 text-red-700 ring-1 ring-red-600/20 px-4 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-widest shadow-sm">❌ ${requestData.status}</span>`;
 
                             listContainer.innerHTML += `
-                                <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between hover:shadow-md transition">
-                                    <div class="flex items-center gap-4">
-                                        <img src="${creator.imageUrl}" alt="${creator.name}" class="w-16 h-16 rounded-full object-cover border-2 border-gray-100">
+                                <div class="premium-card p-6 flex flex-col sm:flex-row items-center justify-between gap-6 group">
+                                    <div class="flex items-center gap-5 w-full sm:w-auto">
+                                        <div class="w-16 h-16 rounded-full p-1 bg-gradient-to-tr from-purple-400 to-blue-400 shrink-0">
+                                            <img src="${creator.imageUrl}" class="w-full h-full rounded-full object-cover border-2 border-white">
+                                        </div>
                                         <div>
-                                            <h3 class="text-lg font-extrabold text-gray-900">${creator.name}</h3>
-                                            <p class="text-sm font-semibold text-gray-500">Sent to Creator</p>
+                                            <h3 class="text-xl font-extrabold text-gray-900">${creator.name}</h3>
+                                            <p class="text-sm font-bold text-gray-500 tracking-wide">PITCHED CREATOR</p>
                                         </div>
                                     </div>
-                                    <div class="text-right flex flex-col items-end gap-2">
-                                        <span class="${statusColor} px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide">
-                                            ${requestData.status}
-                                        </span>
+                                    <div class="flex flex-col sm:items-end gap-3 w-full sm:w-auto">
+                                        ${statusBadge}
+                                        <a href="profile.html?id=${requestData.creatorId}" class="text-sm font-bold text-blue-600 hover:text-blue-800 transition underline underline-offset-4 mt-1">View Profile</a>
                                     </div>
                                 </div>
                             `;
                         }
                     } else {
-                        // --- CREATOR KA VIEW ---
-                        let statusColor = "bg-yellow-100 text-yellow-700";
-                        if(requestData.status === "Accepted") statusColor = "bg-green-100 text-green-700";
-                        if(requestData.status === "Rejected") statusColor = "bg-red-100 text-red-700";
+                        let statusBadge = `<span class="bg-yellow-100 text-yellow-700 ring-1 ring-yellow-600/20 px-4 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-widest shadow-sm">⏳ ${requestData.status}</span>`;
+                        if(requestData.status === "Accepted") statusBadge = `<span class="bg-green-100 text-green-700 ring-1 ring-green-600/20 px-4 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-widest shadow-sm">✅ ${requestData.status}</span>`;
+                        if(requestData.status === "Rejected") statusBadge = `<span class="bg-red-100 text-red-700 ring-1 ring-red-600/20 px-4 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-widest shadow-sm">❌ ${requestData.status}</span>`;
 
-                        // Agar status 'Pending' hai, tabhi buttons dikhao
                         let buttonsHTML = "";
                         if (requestData.status === "Pending") {
                             buttonsHTML = `
-                                <div class="flex gap-2 mt-3">
-                                    <button onclick="updateStatus('${requestId}', 'Accepted')" class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-green-700 transition">Accept</button>
-                                    <button onclick="updateStatus('${requestId}', 'Rejected')" class="bg-red-100 text-red-600 px-4 py-2 rounded-lg text-sm font-bold hover:bg-red-200 transition">Reject</button>
+                                <div class="flex gap-3 mt-4">
+                                    <button onclick="updateStatus('${requestId}', 'Accepted')" class="bg-green-600 text-white px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-green-700 hover:shadow-lg hover:-translate-y-0.5 transition-all">Accept Collab</button>
+                                    <button onclick="updateStatus('${requestId}', 'Rejected')" class="bg-red-50 text-red-600 px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-red-100 transition-colors">Pass</button>
                                 </div>
                             `;
                         }
 
                         listContainer.innerHTML += `
-                            <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between hover:shadow-md transition gap-4">
+                            <div class="premium-card p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
                                 <div>
-                                    <h3 class="text-lg font-extrabold text-gray-900">Collaboration Request</h3>
-                                    <p class="text-sm font-semibold text-gray-500">A brand wants to work with you!</p>
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <span class="text-xl">🤝</span>
+                                        <h3 class="text-xl font-extrabold text-gray-900">New Collaboration Request</h3>
+                                    </div>
+                                    <p class="text-sm font-bold text-gray-500">A registered brand wants to connect with you!</p>
                                     ${buttonsHTML}
                                 </div>
                                 <div class="text-left sm:text-right">
-                                    <span class="${statusColor} px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide">
-                                        Status: ${requestData.status}
-                                    </span>
+                                    ${statusBadge}
                                 </div>
                             </div>
                         `;
                     }
                 });
-
-            } catch (error) {
-                console.error("Error loading requests:", error);
-                listContainer.innerHTML = "<p class='text-red-500 font-bold'>Error loading your requests.</p>";
-            }
+            } catch (error) { listContainer.innerHTML = "<p class='text-red-500 font-bold'>Error loading your requests.</p>"; }
         }
 
-        // 2. Status Update karne ka function (Global banaya taaki button click par chal sake)
         window.updateStatus = async function(requestId, newStatus) {
             try {
-                // Database mein specific request ko update karo
-                const requestRef = doc(db, "requests", requestId);
-                await updateDoc(requestRef, {
-                    status: newStatus
-                });
-                
-                alert(`Request has been ${newStatus}!`);
-                window.location.reload(); // Page refresh kardo taaki naya status dikhe
-            } catch (error) {
-                alert("Error updating status: " + error.message);
-            }
+                await updateDoc(doc(db, "requests", requestId), { status: newStatus });
+                window.location.reload(); 
+            } catch (error) { alert("Error updating status: " + error.message); }
         }
     </script>
 </body>
