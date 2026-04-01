@@ -6,73 +6,78 @@
     <title>Creator Profile - CreatorMatch</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
-        body { font-family: 'Inter', sans-serif; }
-        
-        .watermark-bg {
-            position: fixed;
-            top: 0; left: 0; width: 200vw; height: 100vh;
-            background-image: repeating-linear-gradient(45deg, transparent, transparent 150px, rgba(59, 130, 246, 0.03) 150px, rgba(59, 130, 246, 0.03) 300px);
-            z-index: -1;
-            animation: slideBg 90s linear infinite;
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #f8fafc;
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 30px 30px;
         }
-        @keyframes slideBg {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50vw); }
+        .text-gradient {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .premium-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            overflow: hidden;
+        }
+        .animate-gradient {
+            background-size: 200% 200%;
+            animation: gradientMove 5s ease infinite;
+        }
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
     </style>
 
+    <!-- EmailJS Script -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script type="text/javascript">
-       (function(){
-          // Aapki Public Key yahan hai
-          emailjs.init("w9UsyTWGSZHaT3AzZ");
-       })();
+       (function(){ emailjs.init("w9UsyTWGSZHaT3AzZ"); })();
     </script>
 </head>
-<body class="bg-gray-50 text-gray-800 relative">
+<body class="relative min-h-screen text-gray-800">
 
-    <div class="watermark-bg"></div>
-
-    <header class="flex justify-between items-center py-4 px-8 bg-white shadow-sm border-b border-gray-100 relative z-10">
-        <div class="text-2xl font-extrabold text-blue-600 tracking-tight">
-            <a href="index.html">CreatorMatch</a>
+    <!-- Header (Glassmorphism) -->
+    <header class="flex justify-between items-center py-5 px-8 bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-100 sticky top-0 z-40">
+        <div class="text-2xl font-extrabold text-gradient tracking-tight cursor-pointer hover:opacity-80 transition">
+            <a href="index.html">CreatorMatch.</a>
         </div>
         <div>
-            <a href="dashboard.html" class="text-gray-600 font-semibold hover:text-blue-600 transition">← Back to Dashboard</a>
+            <a href="dashboard.html" class="text-gray-600 font-bold hover:text-blue-600 transition flex items-center gap-2">
+                <span>←</span> Back to Dashboard
+            </a>
         </div>
     </header>
 
-    <main class="max-w-4xl mx-auto mt-10 px-4 mb-20 relative z-10" id="profile-container">
+    <main class="max-w-4xl mx-auto mt-12 px-4 mb-24 relative z-10" id="profile-container">
         <div class="text-center py-20">
-            <p class="text-gray-500 text-lg font-semibold animate-pulse">Loading Profile Details...</p>
+            <div class="inline-block w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mb-4"></div>
+            <p class="text-gray-500 font-bold">Loading brilliant creator...</p>
         </div>
     </main>
 
+    <!-- Firebase Scripts -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
         import { getFirestore, doc, getDoc, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js"; 
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyACcJOwTJrBKKbE56gLtsE8U2JD2VxBIiQ",
-            authDomain: "creatormatch-7c723.firebaseapp.com",
-            projectId: "creatormatch-7c723",
-            storageBucket: "creatormatch-7c723.firebasestorage.app",
-            messagingSenderId: "62514210796",
-            appId: "1:62514210796:web:478775e3e03726693382c9",
-            measurementId: "G-0VN4N73DP1"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+        const firebaseConfig = { apiKey: "AIzaSyACcJOwTJrBKKbE56gLtsE8U2JD2VxBIiQ", authDomain: "creatormatch-7c723.firebaseapp.com", projectId: "creatormatch-7c723", storageBucket: "creatormatch-7c723.firebasestorage.app", messagingSenderId: "62514210796", appId: "1:62514210796:web:478775e3e03726693382c9" };
+        const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
 
         let currentUser = null;
-
         onAuthStateChanged(auth, (user) => {
-            if (user) { currentUser = user; } 
-            else { window.location.href = "auth.html"; }
+            if (user) currentUser = user; 
+            else window.location.href = "auth.html";
         });
 
         const urlParams = new URLSearchParams(window.location.search);
@@ -81,18 +86,14 @@
         function getYouTubeEmbedUrl(url) {
             if (!url) return null;
             let videoId = "";
-            if (url.includes("v=")) {
-                videoId = url.split("v=")[1].substring(0, 11);
-            } else if (url.includes("youtu.be/")) {
-                videoId = url.split("youtu.be/")[1].substring(0, 11);
-            }
+            if (url.includes("v=")) videoId = url.split("v=")[1].substring(0, 11);
+            else if (url.includes("youtu.be/")) videoId = url.split("youtu.be/")[1].substring(0, 11);
             return videoId ? `https://www.youtube.com/embed/${videoId}` : null;
         }
 
         async function loadProfile() {
             const container = document.getElementById("profile-container");
-
-            if (!creatorId) return;
+            if (!creatorId) { container.innerHTML = `<div class="text-center py-20"><h2 class="text-2xl font-bold text-red-500">Error: Creator not found.</h2></div>`; return; }
 
             try {
                 const docRef = doc(db, "creators", creatorId);
@@ -102,20 +103,16 @@
                     const data = docSnap.data();
                     
                     let socialLinksHtml = "";
-                    if (data.instagram) {
-                        socialLinksHtml += `<a href="${data.instagram}" target="_blank" class="px-4 py-2 bg-pink-50 text-pink-600 rounded-lg font-bold hover:bg-pink-100 transition shadow-sm">📸 Instagram</a>`;
-                    }
-                    if (data.linkedin) {
-                        socialLinksHtml += `<a href="${data.linkedin}" target="_blank" class="px-4 py-2 bg-blue-50 text-blue-600 rounded-lg font-bold hover:bg-blue-100 transition shadow-sm">🔗 LinkedIn</a>`;
-                    }
+                    if (data.instagram) socialLinksHtml += `<a href="${data.instagram}" target="_blank" class="px-5 py-2.5 bg-pink-50 text-pink-600 rounded-xl font-bold hover:bg-pink-100 hover:shadow-md transition-all">📸 Instagram</a>`;
+                    if (data.linkedin) socialLinksHtml += `<a href="${data.linkedin}" target="_blank" class="px-5 py-2.5 bg-blue-50 text-blue-600 rounded-xl font-bold hover:bg-blue-100 hover:shadow-md transition-all">🔗 LinkedIn</a>`;
 
                     let videoHtml = "";
                     const embedUrl = getYouTubeEmbedUrl(data.video);
                     if (embedUrl) {
                         videoHtml = `
-                            <div class="mt-10">
-                                <h2 class="text-xl font-bold text-gray-900 mb-4">Featured Showcase</h2>
-                                <div class="relative w-full overflow-hidden rounded-2xl shadow-lg border border-gray-100" style="padding-top: 56.25%;">
+                            <div class="mt-12">
+                                <h2 class="text-xl font-extrabold text-gray-900 mb-6 flex items-center gap-2"><span class="text-red-500">▶</span> Featured Showcase</h2>
+                                <div class="relative w-full overflow-hidden rounded-2xl shadow-xl border border-gray-100 bg-black" style="padding-top: 56.25%;">
                                     <iframe class="absolute top-0 left-0 w-full h-full" src="${embedUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                                 </div>
                             </div>
@@ -123,39 +120,49 @@
                     }
 
                     container.innerHTML = `
-                        <div class="bg-white/95 backdrop-blur-md rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
-                            <div class="h-48 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 animate-gradient"></div>
+                        <div class="premium-card">
+                            <div class="h-56 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 animate-gradient relative">
+                                <div class="absolute inset-0 bg-black/10"></div>
+                            </div>
                             
-                            <div class="px-8 pb-10">
-                                <div class="flex flex-col sm:flex-row items-start sm:items-end gap-6 -mt-16 relative z-10">
-                                    <div class="w-32 h-32 bg-white rounded-full border-4 border-white shadow-lg overflow-hidden flex-shrink-0">
-                                        <img src="${data.imageUrl || 'https://via.placeholder.com/150'}" alt="${data.name}" class="w-full h-full object-cover">
+                            <div class="px-10 pb-12">
+                                <div class="flex flex-col sm:flex-row items-start sm:items-end gap-6 -mt-20 relative z-10">
+                                    <div class="w-36 h-36 bg-white rounded-2xl p-1.5 shadow-xl shrink-0 rotate-[-2deg] hover:rotate-0 transition-transform duration-300">
+                                        <img src="${data.imageUrl || 'https://via.placeholder.com/150'}" alt="${data.name}" class="w-full h-full object-cover rounded-xl">
                                     </div>
                                     
-                                    <div class="flex-1 w-full flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4 pb-2">
+                                    <div class="flex-1 w-full flex flex-col sm:flex-row sm:justify-between sm:items-end gap-6 pb-2">
                                         <div>
                                             <h1 class="text-4xl font-extrabold text-gray-900 tracking-tight">${data.name}</h1>
-                                            <p class="text-sm font-bold text-purple-600 mt-1 uppercase tracking-widest">${data.category}</p>
+                                            <p class="text-sm font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600 mt-1 uppercase tracking-widest">${data.category}</p>
                                         </div>
-                                        <button id="send-request-btn" class="bg-gray-900 text-white px-8 py-3 rounded-xl font-bold hover:bg-gray-800 transition shadow-lg transform hover:-translate-y-1 whitespace-nowrap">
+                                        <button id="send-request-btn" class="bg-gray-900 text-white px-8 py-4 rounded-xl font-extrabold hover:bg-gray-800 hover:shadow-xl hover:shadow-gray-500/20 transform hover:-translate-y-1 transition-all whitespace-nowrap text-lg">
                                             Send Collab Request
                                         </button>
                                     </div>
                                 </div>
 
-                                <div class="flex gap-3 mt-6">
-                                    ${socialLinksHtml}
+                                <div class="mt-8 flex items-center gap-6">
+                                    <div class="flex items-center gap-2">
+                                        <span class="p-2 bg-blue-50 text-blue-600 rounded-lg text-lg">👥</span>
+                                        <div>
+                                            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Audience</p>
+                                            <p class="text-xl font-extrabold text-gray-900">${(data.followers || 0).toLocaleString()}</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex gap-3">
+                                        ${socialLinksHtml}
+                                    </div>
                                 </div>
 
-                                <div class="mt-8 pt-8 border-t border-gray-100">
-                                    <h2 class="text-xl font-bold text-gray-900 mb-4">About the Creator</h2>
-                                    <p class="text-gray-600 leading-relaxed text-lg">
-                                        ${data.bio || "This creator hasn't added a bio yet, but their content speaks for itself!"}
+                                <div class="mt-10 pt-10 border-t border-gray-100">
+                                    <h2 class="text-xl font-extrabold text-gray-900 mb-4">About the Creator</h2>
+                                    <p class="text-gray-600 leading-relaxed text-lg font-medium">
+                                        ${data.bio || "This creator is busy making amazing content!"}
                                     </p>
                                 </div>
 
                                 ${videoHtml}
-                                
                             </div>
                         </div>
                     `;
@@ -163,43 +170,24 @@
                     const requestBtn = document.getElementById("send-request-btn");
                     requestBtn.addEventListener("click", async () => {
                         if(!currentUser) return;
-                        requestBtn.innerText = "Sending...";
-                        requestBtn.disabled = true;
-                        
+                        requestBtn.innerText = "Sending Pitch..."; requestBtn.disabled = true;
                         try {
-                            // 1. Database mein Save karo
-                            await addDoc(collection(db, "requests"), {
-                                businessId: currentUser.uid,
-                                creatorId: creatorId,
-                                status: "Pending",
-                                timestamp: new Date()
-                            });
-
-                            // 2. NAYA: EmailJS se Asli Mail Bhejo!
-                            // Aapki Service ID aur Template ID yahan hain
-                            await emailjs.send("service_c2zs788", "template_xyz987", {
-                                to_name: data.name, // Creator ka naam
-                                business_name: currentUser.email // Jisne request bheji uska email ya naam
-                            });
+                            await addDoc(collection(db, "requests"), { businessId: currentUser.uid, creatorId: creatorId, status: "Pending", timestamp: new Date() });
+                            await emailjs.send("service_c2zs788", "template_xyz987", { to_name: data.name, business_name: currentUser.email });
 
                             requestBtn.innerText = "Request Sent! ✓";
-                            requestBtn.classList.replace("bg-gray-900", "bg-green-600");
-                            requestBtn.classList.replace("hover:bg-gray-800", "hover:bg-green-700");
-                            
-                            alert("Request sent successfully! An email notification has been dispatched.");
-
+                            requestBtn.classList.replace("bg-gray-900", "bg-green-500");
+                            requestBtn.classList.replace("hover:bg-gray-800", "hover:bg-green-600");
+                            requestBtn.classList.replace("hover:shadow-gray-500/20", "hover:shadow-green-500/30");
+                            alert("Request sent successfully! The creator has been notified.");
                         } catch (error) {
-                            console.error("Error:", error);
-                            alert("Error processing request: " + error.message);
-                            requestBtn.innerText = "Send Collab Request";
-                            requestBtn.disabled = false;
+                            alert("Error: " + error.message);
+                            requestBtn.innerText = "Send Collab Request"; requestBtn.disabled = false;
                         }
                     });
 
-                }
-            } catch (error) {
-                console.error(error);
-            }
+                } else container.innerHTML = `<div class="text-center py-20"><h2 class="text-2xl font-bold text-red-500">Creator not found!</h2></div>`;
+            } catch (error) { container.innerHTML = `<div class="text-center py-20"><h2 class="text-2xl font-bold text-red-500">Error loading profile.</h2></div>`; }
         }
 
         loadProfile();
