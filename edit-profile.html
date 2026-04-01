@@ -6,38 +6,61 @@
     <title>Edit Profile - CreatorMatch</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
-        body { font-family: 'Inter', sans-serif; }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #f8fafc;
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+        .text-gradient {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .premium-card {
+            background: white;
+            border-radius: 2rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
     </style>
 </head>
-<body class="bg-gray-50 flex flex-col min-h-screen">
+<body class="flex flex-col min-h-screen">
 
-    <header class="flex justify-between items-center py-4 px-8 bg-white shadow-sm border-b border-gray-100">
-        <div class="text-2xl font-extrabold text-blue-600 tracking-tight">
-            <a href="index.html">CreatorMatch</a>
+    <!-- Header -->
+    <header class="flex justify-between items-center py-5 px-8 bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-100 sticky top-0 z-40">
+        <div class="text-2xl font-extrabold text-gradient tracking-tight cursor-pointer hover:opacity-80 transition">
+            <a href="index.html">CreatorMatch.</a>
         </div>
         <div>
-            <a href="dashboard.html" class="text-gray-600 font-semibold hover:text-blue-600 transition">← Back to Dashboard</a>
+            <a href="dashboard.html" class="text-gray-600 font-bold hover:text-blue-600 transition flex items-center gap-2">
+                <span>←</span> Back to Dashboard
+            </a>
         </div>
     </header>
 
-    <main class="flex-grow flex items-center justify-center p-4 py-10">
-        <div class="bg-white max-w-2xl w-full rounded-3xl shadow-lg border border-gray-100 p-8">
+    <main class="flex-grow flex items-center justify-center p-4 py-12 relative z-10">
+        <div class="premium-card max-w-2xl w-full p-10">
             
-            <div class="text-center mb-8">
-                <h1 class="text-3xl font-extrabold text-gray-900">Edit Your Profile</h1>
-                <p class="text-gray-500 text-sm mt-2" id="loading-text">Loading your data...</p>
+            <div class="text-center mb-10">
+                <div class="w-16 h-16 bg-gray-100 rounded-full mx-auto flex items-center justify-center mb-4">
+                    <span class="text-2xl">⚙️</span>
+                </div>
+                <h1 class="text-3xl font-extrabold text-gray-900">Profile Settings</h1>
+                <p class="text-gray-500 font-semibold mt-2" id="loading-text">Loading your data...</p>
             </div>
 
-            <form class="space-y-5 hidden" id="creator-form">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <!-- CREATOR FORM -->
+            <form class="space-y-6 hidden" id="creator-form">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Display Name</label>
-                        <input type="text" id="c-name" required class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition">
+                        <label class="block text-sm font-extrabold text-gray-700 mb-2 uppercase tracking-wide">Display Name</label>
+                        <input type="text" id="c-name" required class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:bg-white transition text-sm font-bold shadow-inner">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Category</label>
-                        <select id="c-category" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition cursor-pointer">
+                        <label class="block text-sm font-extrabold text-gray-700 mb-2 uppercase tracking-wide">Category</label>
+                        <select id="c-category" class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:bg-white transition text-sm font-bold shadow-inner cursor-pointer">
                             <option value="Tech & Gadgets">Tech & Gadgets</option>
                             <option value="Fashion & Lifestyle">Fashion & Lifestyle</option>
                             <option value="Gaming">Gaming</option>
@@ -46,100 +69,85 @@
                         </select>
                     </div>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Total Followers</label>
-                        <input type="number" id="c-followers" required class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition">
+                        <label class="block text-sm font-extrabold text-gray-700 mb-2 uppercase tracking-wide">Total Followers</label>
+                        <input type="number" id="c-followers" required class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:bg-white transition text-sm font-bold shadow-inner">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Profile Photo URL</label>
-                        <input type="text" id="c-image" required class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition">
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">About You (Bio)</label>
-                    <textarea id="c-bio" rows="3" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition"></textarea>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Instagram Link</label>
-                        <input type="url" id="c-instagram" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-pink-500 transition">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">LinkedIn Link</label>
-                        <input type="url" id="c-linkedin" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-600 transition">
+                        <label class="block text-sm font-extrabold text-gray-700 mb-2 uppercase tracking-wide">Profile Photo URL</label>
+                        <input type="text" id="c-image" required class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:bg-white transition text-sm font-bold shadow-inner">
                     </div>
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">YouTube Video Link</label>
-                    <input type="url" id="c-video" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-red-500 transition">
+                    <label class="block text-sm font-extrabold text-gray-700 mb-2 uppercase tracking-wide">About You (Bio)</label>
+                    <textarea id="c-bio" rows="3" class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:bg-white transition text-sm font-bold shadow-inner"></textarea>
                 </div>
-                <button type="submit" id="save-creator-btn" class="w-full py-4 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition shadow-lg mt-6 text-lg">
-                    Update Creator Profile
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-extrabold text-gray-700 mb-2 uppercase tracking-wide">Instagram Link</label>
+                        <input type="url" id="c-instagram" class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-pink-500/50 focus:bg-white transition text-sm font-bold shadow-inner">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-extrabold text-gray-700 mb-2 uppercase tracking-wide">LinkedIn Link</label>
+                        <input type="url" id="c-linkedin" class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:bg-white transition text-sm font-bold shadow-inner">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-extrabold text-gray-700 mb-2 uppercase tracking-wide">YouTube Video Link</label>
+                    <input type="url" id="c-video" class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:bg-white transition text-sm font-bold shadow-inner">
+                </div>
+                <button type="submit" id="save-creator-btn" class="w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-extrabold rounded-2xl hover:shadow-lg hover:shadow-purple-500/30 transform hover:-translate-y-0.5 transition-all duration-300 text-lg mt-8">
+                    Save Changes
                 </button>
             </form>
 
-            <form class="space-y-5 hidden" id="business-form">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <!-- BUSINESS FORM -->
+            <form class="space-y-6 hidden" id="business-form">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Company / Brand Name</label>
-                        <input type="text" id="b-name" required placeholder="e.g. Nike" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-gray-900 transition">
+                        <label class="block text-sm font-extrabold text-gray-700 mb-2 uppercase tracking-wide">Company / Brand Name</label>
+                        <input type="text" id="b-name" required class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:bg-white transition text-sm font-bold shadow-inner">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Industry</label>
-                        <input type="text" id="b-industry" required placeholder="e.g. Sports & Apparel" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-gray-900 transition">
+                        <label class="block text-sm font-extrabold text-gray-700 mb-2 uppercase tracking-wide">Industry</label>
+                        <input type="text" id="b-industry" required class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:bg-white transition text-sm font-bold shadow-inner">
                     </div>
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Company Logo URL</label>
-                    <input type="url" id="b-logo" required placeholder="Link to your brand logo" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-gray-900 transition">
+                    <label class="block text-sm font-extrabold text-gray-700 mb-2 uppercase tracking-wide">Company Logo URL</label>
+                    <input type="url" id="b-logo" required class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:bg-white transition text-sm font-bold shadow-inner">
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Website URL</label>
-                    <input type="url" id="b-website" placeholder="https://yourbrand.com" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-gray-900 transition">
+                    <label class="block text-sm font-extrabold text-gray-700 mb-2 uppercase tracking-wide">Website URL</label>
+                    <input type="url" id="b-website" class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:bg-white transition text-sm font-bold shadow-inner">
                 </div>
-                <button type="submit" id="save-business-btn" class="w-full py-4 bg-gray-900 text-white font-bold rounded-xl hover:bg-gray-800 transition shadow-lg mt-6 text-lg">
-                    Update Business Profile
+                <button type="submit" id="save-business-btn" class="w-full py-4 bg-gray-900 text-white font-extrabold rounded-2xl hover:shadow-lg hover:bg-gray-800 transform hover:-translate-y-0.5 transition-all duration-300 text-lg mt-8">
+                    Save Changes
                 </button>
             </form>
 
         </div>
     </main>
 
+    <!-- Firebase Scripts -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
-        // 'setDoc' ke andar {merge: true} use karenge taaki purana data delete na ho
         import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js"; 
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyACcJOwTJrBKKbE56gLtsE8U2JD2VxBIiQ",
-            authDomain: "creatormatch-7c723.firebaseapp.com",
-            projectId: "creatormatch-7c723",
-            storageBucket: "creatormatch-7c723.firebasestorage.app",
-            messagingSenderId: "62514210796",
-            appId: "1:62514210796:web:478775e3e03726693382c9"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+        const firebaseConfig = { apiKey: "AIzaSyACcJOwTJrBKKbE56gLtsE8U2JD2VxBIiQ", authDomain: "creatormatch-7c723.firebaseapp.com", projectId: "creatormatch-7c723", storageBucket: "creatormatch-7c723.firebasestorage.app", messagingSenderId: "62514210796", appId: "1:62514210796:web:478775e3e03726693382c9" };
+        const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
 
         const creatorForm = document.getElementById("creator-form");
         const businessForm = document.getElementById("business-form");
-        const loadingText = document.getElementById("loading-text");
-        let currentUserRole = "";
-
+        
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                // 1. Role Check Karo
                 const userDoc = await getDoc(doc(db, "users", user.uid));
                 if (userDoc.exists()) {
-                    currentUserRole = userDoc.data().role;
-                    loadingText.innerText = "Update your details below.";
-
-                    // 2. Agar Creator hai toh Creator ka data laao
-                    if (currentUserRole === "creator") {
+                    document.getElementById("loading-text").innerText = "Update your details below to stand out.";
+                    if (userDoc.data().role === "creator") {
                         creatorForm.classList.remove("hidden");
                         const creatorDoc = await getDoc(doc(db, "creators", user.uid));
                         if (creatorDoc.exists()) {
@@ -153,9 +161,7 @@
                             document.getElementById("c-linkedin").value = data.linkedin || "";
                             document.getElementById("c-video").value = data.video || "";
                         }
-                    } 
-                    // 3. Agar Business hai toh Business ka data laao
-                    else if (currentUserRole === "business") {
+                    } else {
                         businessForm.classList.remove("hidden");
                         const businessDoc = await getDoc(doc(db, "businesses", user.uid));
                         if (businessDoc.exists()) {
@@ -167,63 +173,34 @@
                         }
                     }
                 }
-            } else {
-                window.location.href = "auth.html";
-            }
+            } else window.location.href = "auth.html";
         });
 
-        // CREATOR SAVE LOGIC
         creatorForm.addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById("save-creator-btn");
-            btn.innerText = "Saving..."; btn.disabled = true;
-
+            e.preventDefault(); const btn = document.getElementById("save-creator-btn"); btn.innerText = "Saving..."; btn.disabled = true;
             try {
-                const user = auth.currentUser;
-                await setDoc(doc(db, "creators", user.uid), {
-                    name: document.getElementById("c-name").value,
-                    category: document.getElementById("c-category").value,
-                    followers: parseInt(document.getElementById("c-followers").value),
-                    imageUrl: document.getElementById("c-image").value,
-                    bio: document.getElementById("c-bio").value,
-                    instagram: document.getElementById("c-instagram").value,
-                    linkedin: document.getElementById("c-linkedin").value,
-                    video: document.getElementById("c-video").value,
-                    uid: user.uid
-                }, { merge: true }); // Merge true se sirf update hota hai, replace nahi
-
-                alert("Creator Profile Updated!");
-                window.location.href = "dashboard.html";
-            } catch (error) {
-                alert("Error: " + error.message);
-                btn.innerText = "Update Creator Profile"; btn.disabled = false;
-            }
-        });
-
-        // BUSINESS SAVE LOGIC
-        businessForm.addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById("save-business-btn");
-            btn.innerText = "Saving..."; btn.disabled = true;
-
-            try {
-                const user = auth.currentUser;
-                await setDoc(doc(db, "businesses", user.uid), {
-                    companyName: document.getElementById("b-name").value,
-                    industry: document.getElementById("b-industry").value,
-                    logoUrl: document.getElementById("b-logo").value,
-                    website: document.getElementById("b-website").value,
-                    uid: user.uid
+                await setDoc(doc(db, "creators", auth.currentUser.uid), {
+                    name: document.getElementById("c-name").value, category: document.getElementById("c-category").value,
+                    followers: parseInt(document.getElementById("c-followers").value), imageUrl: document.getElementById("c-image").value,
+                    bio: document.getElementById("c-bio").value, instagram: document.getElementById("c-instagram").value,
+                    linkedin: document.getElementById("c-linkedin").value, video: document.getElementById("c-video").value,
+                    uid: auth.currentUser.uid
                 }, { merge: true });
-
-                alert("Business Profile Updated!");
-                window.location.href = "dashboard.html";
-            } catch (error) {
-                alert("Error: " + error.message);
-                btn.innerText = "Update Business Profile"; btn.disabled = false;
-            }
+                alert("Profile Updated Successfully!"); window.location.href = "dashboard.html";
+            } catch (error) { alert("Error: " + error.message); btn.innerText = "Save Changes"; btn.disabled = false; }
         });
 
+        businessForm.addEventListener("submit", async (e) => {
+            e.preventDefault(); const btn = document.getElementById("save-business-btn"); btn.innerText = "Saving..."; btn.disabled = true;
+            try {
+                await setDoc(doc(db, "businesses", auth.currentUser.uid), {
+                    companyName: document.getElementById("b-name").value, industry: document.getElementById("b-industry").value,
+                    logoUrl: document.getElementById("b-logo").value, website: document.getElementById("b-website").value,
+                    uid: auth.currentUser.uid
+                }, { merge: true });
+                alert("Business Profile Updated!"); window.location.href = "dashboard.html";
+            } catch (error) { alert("Error: " + error.message); btn.innerText = "Save Changes"; btn.disabled = false; }
+        });
     </script>
 </body>
 </html>
