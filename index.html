@@ -6,18 +6,48 @@
     <title>CreatorMatch - Find Your Perfect Collab</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
-        body { font-family: 'Inter', sans-serif; }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
+        
+        /* Premium Animations */
+        .blob {
+            position: absolute; filter: blur(80px); z-index: -1; opacity: 0.6;
+            animation: float 10s infinite ease-in-out alternate;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px) scale(1); }
+            100% { transform: translateY(-50px) scale(1.1); }
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        .text-gradient {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800">
+<body class="bg-slate-50 text-gray-800 relative min-h-screen">
 
-    <div id="auth-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-md w-full p-8 text-center shadow-2xl transform scale-100 transition-all">
+    <!-- Animated Background Blobs -->
+    <div class="blob bg-purple-300 w-96 h-96 rounded-full top-[-10%] left-[-10%]"></div>
+    <div class="blob bg-blue-300 w-96 h-96 rounded-full bottom-[20%] right-[-10%]" style="animation-delay: 2s;"></div>
+    <div class="blob bg-pink-200 w-80 h-80 rounded-full top-[40%] left-[40%]" style="animation-delay: 4s;"></div>
+
+    <!-- Auth Popup Modal (Glassmorphism) -->
+    <div id="auth-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 transition-opacity duration-300">
+        <div class="glass-card rounded-[2rem] max-w-md w-full p-10 text-center shadow-2xl transform scale-100 transition-all">
+            <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full mx-auto flex items-center justify-center mb-6 shadow-lg">
+                <span class="text-3xl text-white">✨</span>
+            </div>
             <h2 class="text-3xl font-extrabold text-gray-900 mb-2">Welcome to CreatorMatch</h2>
-            <p class="text-gray-500 mb-8 font-semibold">Join the best platform to connect Brands and Creators.</p>
+            <p class="text-gray-600 mb-8 font-semibold">Join the most premium platform for Brands and Creators.</p>
             
-            <a href="auth.html" class="block w-full py-4 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition shadow-lg mb-4 text-lg">
+            <a href="auth.html" class="block w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold rounded-xl hover:shadow-lg hover:shadow-purple-500/30 transform hover:-translate-y-1 transition-all duration-300 text-lg mb-4">
                 Login / Sign Up
             </a>
             <button onclick="closeModal()" class="text-gray-500 font-bold hover:text-gray-800 transition">
@@ -26,24 +56,30 @@
         </div>
     </div>
 
-    <header class="flex justify-between items-center py-4 px-8 bg-white shadow-sm border-b border-gray-100">
-        <div class="text-2xl font-extrabold text-blue-600 tracking-tight">CreatorMatch</div>
-        <div id="nav-links">
-            </div>
+    <!-- Header -->
+    <header class="flex justify-between items-center py-6 px-8 glass-card sticky top-0 z-40 shadow-sm">
+        <div class="text-2xl font-extrabold text-gradient tracking-tight">CreatorMatch.</div>
+        <div id="nav-links"></div>
     </header>
 
-    <main class="max-w-6xl mx-auto mt-10 px-4 mb-20 text-center">
-        <h1 class="text-5xl font-extrabold text-gray-900 mb-4 tracking-tight">Discover Top Talent & Brands</h1>
-        <p class="text-gray-500 text-xl font-semibold mb-10">Explore the platform before signing up.</p>
+    <!-- Guest View Content -->
+    <main class="max-w-6xl mx-auto mt-20 px-4 mb-20 relative z-10">
+        <div class="text-center mb-24">
+            <span class="px-4 py-2 rounded-full bg-blue-100 text-blue-700 font-bold text-sm mb-6 inline-block shadow-sm">🚀 The #1 Collaboration Platform</span>
+            <h1 class="text-5xl md:text-7xl font-extrabold text-gray-900 mb-6 tracking-tight leading-tight">
+                Discover Top <span class="text-gradient">Talent</span> <br>& Global <span class="text-gradient">Brands</span>
+            </h1>
+            <p class="text-gray-500 text-xl font-semibold max-w-2xl mx-auto">Explore the platform before signing up. Connect, collaborate, and create magic together.</p>
+        </div>
         
-        <h2 class="text-2xl font-bold text-left mb-6">Featured Creators</h2>
-        <div id="guest-creators" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 text-left mb-16">
-            <p class="text-gray-400">Loading creators...</p>
+        <h2 class="text-2xl font-bold text-gray-800 mb-8 flex items-center gap-2"><span class="text-purple-500">🔥</span> Featured Creators</h2>
+        <div id="guest-creators" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 text-left mb-24">
+            <p class="text-gray-400 animate-pulse font-semibold">Loading amazing creators...</p>
         </div>
 
-        <h2 class="text-2xl font-bold text-left mb-6">Brands on Platform</h2>
-        <div id="guest-brands" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 text-left">
-            <p class="text-gray-400">Loading brands...</p>
+        <h2 class="text-2xl font-bold text-gray-800 mb-8 flex items-center gap-2"><span class="text-blue-500">🏢</span> Brands on Platform</h2>
+        <div id="guest-brands" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
+            <p class="text-gray-400 animate-pulse font-semibold">Loading top brands...</p>
         </div>
     </main>
 
@@ -52,68 +88,59 @@
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
         import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyACcJOwTJrBKKbE56gLtsE8U2JD2VxBIiQ",
-            authDomain: "creatormatch-7c723.firebaseapp.com",
-            projectId: "creatormatch-7c723",
-            storageBucket: "creatormatch-7c723.firebasestorage.app",
-            messagingSenderId: "62514210796",
-            appId: "1:62514210796:web:478775e3e03726693382c9"
-        };
+        const firebaseConfig = { apiKey: "AIzaSyACcJOwTJrBKKbE56gLtsE8U2JD2VxBIiQ", authDomain: "creatormatch-7c723.firebaseapp.com", projectId: "creatormatch-7c723", storageBucket: "creatormatch-7c723.firebasestorage.app", messagingSenderId: "62514210796", appId: "1:62514210796:web:478775e3e03726693382c9" };
+        const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        // Modal Logic
         const modal = document.getElementById('auth-modal');
         const navLinks = document.getElementById('nav-links');
 
         window.closeModal = function() {
             modal.classList.add('hidden');
-            sessionStorage.setItem('guestSkipped', 'true'); // Yaad rakho ki skip kiya tha
+            sessionStorage.setItem('guestSkipped', 'true');
         }
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // Agar logged in hai, toh Dashboard ka button dikhao
-                navLinks.innerHTML = `<a href="dashboard.html" class="bg-gray-900 text-white px-6 py-2 rounded-lg font-bold hover:bg-gray-800 transition">Go to Dashboard</a>`;
-                modal.classList.add('hidden'); // Modal mat dikhao
+                navLinks.innerHTML = `<a href="dashboard.html" class="bg-gradient-to-r from-gray-900 to-gray-800 text-white px-6 py-3 rounded-xl font-bold hover:shadow-lg hover:shadow-gray-500/30 transition-all transform hover:-translate-y-0.5 inline-block">Go to Dashboard</a>`;
+                modal.classList.add('hidden');
             } else {
-                // Logged out hai
-                navLinks.innerHTML = `<a href="auth.html" class="text-blue-600 font-bold hover:underline">Login / Join</a>`;
-                // Agar pehle skip nahi kiya hai, toh Modal dikhao
-                if (!sessionStorage.getItem('guestSkipped')) {
-                    modal.classList.remove('hidden');
-                }
+                navLinks.innerHTML = `<a href="auth.html" class="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-500/30 transition-all">Login / Join</a>`;
+                if (!sessionStorage.getItem('guestSkipped')) modal.classList.remove('hidden');
             }
         });
 
-        // Guest Data Fetching
         async function loadGuestData() {
-            // Load Creators
             const cSnap = await getDocs(collection(db, "creators"));
             const cContainer = document.getElementById("guest-creators");
             cContainer.innerHTML = "";
             cSnap.forEach(doc => {
                 const data = doc.data();
                 cContainer.innerHTML += `
-                    <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
-                        <img src="${data.imageUrl || 'https://via.placeholder.com/50'}" class="w-16 h-16 rounded-full object-cover">
-                        <div><h3 class="font-bold text-lg">${data.name}</h3><p class="text-sm text-gray-500">${data.category}</p></div>
+                    <div class="glass-card p-6 rounded-[2rem] hover:shadow-2xl hover:shadow-purple-500/10 transform hover:-translate-y-2 transition-all duration-300 flex items-center gap-5 group cursor-pointer">
+                        <div class="w-16 h-16 rounded-full p-1 bg-gradient-to-tr from-purple-500 to-blue-500">
+                            <img src="${data.imageUrl || 'https://via.placeholder.com/50'}" class="w-full h-full rounded-full object-cover border-2 border-white">
+                        </div>
+                        <div>
+                            <h3 class="font-extrabold text-xl text-gray-900 group-hover:text-purple-600 transition-colors">${data.name}</h3>
+                            <p class="text-sm font-bold text-gray-500 tracking-wide uppercase mt-1">${data.category}</p>
+                        </div>
                     </div>`;
             });
 
-            // Load Businesses
             const bSnap = await getDocs(collection(db, "businesses"));
             const bContainer = document.getElementById("guest-brands");
             bContainer.innerHTML = "";
             bSnap.forEach(doc => {
                 const data = doc.data();
                 bContainer.innerHTML += `
-                    <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
-                        <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center font-bold text-xl">${data.companyName.charAt(0)}</div>
-                        <div><h3 class="font-bold text-lg">${data.companyName}</h3><p class="text-sm text-gray-500">${data.industry}</p></div>
+                    <div class="glass-card p-6 rounded-[2rem] hover:shadow-2xl hover:shadow-blue-500/10 transform hover:-translate-y-2 transition-all duration-300 flex items-center gap-5 group cursor-pointer">
+                        <div class="w-16 h-16 bg-gradient-to-br from-gray-800 to-black rounded-2xl flex items-center justify-center font-extrabold text-2xl text-white shadow-inner transform group-hover:rotate-12 transition-transform">
+                            ${data.companyName.charAt(0)}
+                        </div>
+                        <div>
+                            <h3 class="font-extrabold text-xl text-gray-900 group-hover:text-blue-600 transition-colors">${data.companyName}</h3>
+                            <p class="text-sm font-bold text-gray-500 tracking-wide uppercase mt-1">${data.industry}</p>
+                        </div>
                     </div>`;
             });
         }
