@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - CreatorMatch</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <header class="flex justify-between items-center py-4 px-8 bg-white shadow-sm border-b border-gray-100">
+        <div class="text-2xl font-extrabold text-blue-600 tracking-tight cursor-pointer hover:text-blue-700 transition">
+            <a href="index.html">CreatorMatch</a>
+        </div>
+        <div class="flex items-center space-x-6">
+            <a href="requests.html" class="text-gray-600 font-semibold hover:text-blue-600 transition">My Requests</a>
+            <a href="edit-profile.html" class="text-gray-600 font-semibold hover:text-blue-600 transition">Edit Profile</a>
+            <button id="logout-btn" class="bg-red-50 text-red-600 px-4 py-2 rounded-lg font-bold hover:bg-red-100 transition">Logout</button>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto mt-10 px-4 mb-20">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
+            <div>
+                <h1 class="text-3xl font-extrabold text-gray-900" id="dash-title">Welcome to Dashboard</h1>
+                <p class="text-gray-500 font-semibold mt-1" id="dash-subtitle">Loading your personalized view...</p>
+            </div>
+            
+            <div id="search-filter-container" class="hidden flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                <input type="text" id="search-bar" placeholder="Search..." class="w-full sm:w-64 px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 shadow-sm transition text-sm font-medium">
+                
+                <select id="filter-dropdown" class="w-full sm:w-48 px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 shadow-sm transition text-sm font-medium cursor-pointer">
+                    <option value="All">Loading filters...</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="data-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <p class="text-gray-500 font-bold animate-pulse">Fetching data...</p>
+        </div>
+    </main>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+        import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyACcJOwTJrBKKbE56gLtsE8U2JD2VxBIiQ",
+            authDomain: "creatormatch-7c723.firebaseapp.com",
+            projectId: "creatormatch-7c723",
+            storageBucket: "creatormatch-7c723.firebasestorage.app",
+            messagingSenderId: "62514210796",
+            appId: "1:62514210796:web:478775e3e03726693382c9"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let allData = []; // Creators ya Businesses ka sara data yahan save hoga
+        let currentRole = ""; // User ka role (business ya creator)
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                const userDoc = await getDoc(doc(db, "users", user.uid));
+                if (userDoc.exists()) {
+                    currentRole = userDoc.data().role;
+                    document.getElementById("search-filter-container").classList.remove("hidden");
+                    
+                    if (currentRole === 'business') {
+                        loadForBusiness();
+                    } else {
+                        loadForCreator();
+                    }
+                }
+            } else {
+                window.location.href = "index.html";
+            }
+        });
+
+        // ------------------ BUSINESS VIEW ------------------
+        async function loadForBusiness() {
+            document.getElementById("dash-title").innerText = "Find Creators";
+            document.getElementById("dash-subtitle").innerText = "Search and filter top talent for your brand.";
+            
+            document.getElementById("search-bar").placeholder = "Search creators by name...";
+            document.getElementById("filter-dropdown").innerHTML = `
+                <option value="All">All Categories</option>
+                <option value="Tech & Gadgets">Tech & Gadgets</option>
+                <option value="Fashion & Lifestyle">Fashion & Lifestyle</option>
+                <option value="Gaming">Gaming</option>
+                <option value="Education">Education</option>
+                <option value="Food & Travel">Food & Travel</option>
+            `;
+
+            const querySnapshot = await getDocs(collection(db, "creators"));
+            allData = [];
+            querySnapshot.forEach((doc) => {
+                allData.push({ id: doc.id, ...doc.data() });
+            });
+            renderCreators(allData);
+        }
+
+        function renderCreators(creatorsArray) {
+            const grid = document.getElementById("data-grid");
+            grid.innerHTML = "";
+            if(creatorsArray.length === 0) {
+                grid.innerHTML = "<p class='text-gray-500 font-bold col-span-full'>No creators found matching your search.</p>";
+                return;
+            }
+            creatorsArray.forEach(creator => {
+                grid.innerHTML += `
+                    <div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 hover:shadow-xl transition transform hover:-translate-y-1">
+                        <div class="flex items-center gap-4 mb-4">
+                            <img src="${creator.imageUrl || 'https://via.placeholder.com/150'}" class="w-16 h-16 rounded-full object-cover border-2 border-gray-50">
+                            <div>
+                                <h3 class="text-xl font-extrabold text-gray-900">${creator.name}</h3>
+                                <p class="text-sm font-bold text-blue-600 uppercase tracking-wide">${creator.category}</p>
+                            </div>
+                        </div>
+                        <a href="profile.html?id=${creator.id}" class="block w-full text-center py-3 bg-gray-50 text-gray-900 font-bold rounded-xl hover:bg-gray-900 hover:text-white transition">View Profile</a>
+                    </div>
+                `;
+            });
+        }
+
+        // ------------------ CREATOR VIEW ------------------
+        async function loadForCreator() {
+            document.getElementById("dash-title").innerText = "Brands Looking for You";
+            document.getElementById("dash-subtitle").innerText = "Search and filter registered brands.";
+            
+            document.getElementById("search-bar").placeholder = "Search brands by name...";
+
+            const querySnapshot = await getDocs(collection(db, "businesses"));
+            allData = [];
+            let uniqueIndustries = new Set(); // Taaki filter mein duplicate industries na aayein
+
+            querySnapshot.forEach((doc) => {
+                let data = doc.data();
+                allData.push({ id: doc.id, ...data });
+                if(data.industry) uniqueIndustries.add(data.industry);
+            });
+
+            // Dynamically dropdown options generate karo brands ki industry se
+            let dropdownHTML = `<option value="All">All Industries</option>`;
+            uniqueIndustries.forEach(industry => {
+                dropdownHTML += `<option value="${industry}">${industry}</option>`;
+            });
+            document.getElementById("filter-dropdown").innerHTML = dropdownHTML;
+
+            renderBusinesses(allData);
+        }
+
+        function renderBusinesses(businessArray) {
+            const grid = document.getElementById("data-grid");
+            grid.innerHTML = "";
+            if (businessArray.length === 0) {
+                grid.innerHTML = "<p class='text-gray-500 font-bold col-span-full'>No brands found matching your search.</p>";
+                return;
+            }
+
+            businessArray.forEach((business) => {
+                grid.innerHTML += `
+                    <div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 hover:shadow-xl transition transform hover:-translate-y-1 text-center">
+                        <div class="w-20 h-20 mx-auto bg-gray-900 text-white rounded-2xl flex items-center justify-center text-3xl font-extrabold mb-4 shadow-md overflow-hidden">
+                            ${business.logoUrl ? `<img src="${business.logoUrl}" class="w-full h-full object-cover">` : business.companyName.charAt(0)}
+                        </div>
+                        <h3 class="text-xl font-extrabold text-gray-900">${business.companyName}</h3>
+                        <p class="text-sm font-bold text-purple-600 uppercase tracking-wide mb-4">${business.industry}</p>
+                        <a href="${business.website || '#'}" target="_blank" class="block w-full py-3 bg-gray-50 text-gray-900 font-bold rounded-xl hover:bg-gray-200 transition">Visit Website</a>
+                    </div>
+                `;
+            });
+        }
+
+        // ------------------ SEARCH & FILTER LOGIC ------------------
+        const searchBar = document.getElementById("search-bar");
+        const filterDropdown = document.getElementById("filter-dropdown");
+
+        function applySearchAndFilter() {
+            const searchTerm = searchBar.value.toLowerCase();
+            const filterValue = filterDropdown.value;
+
+            if (currentRole === 'business') {
+                const filteredData = allData.filter(item => {
+                    const matchesSearch = item.name.toLowerCase().includes(searchTerm) || item.category.toLowerCase().includes(searchTerm);
+                    const matchesFilter = filterValue === "All" || item.category === filterValue;
+                    return matchesSearch && matchesFilter;
+                });
+                renderCreators(filteredData);
+            } 
+            else if (currentRole === 'creator') {
+                const filteredData = allData.filter(item => {
+                    const matchesSearch = item.companyName.toLowerCase().includes(searchTerm);
+                    const matchesFilter = filterValue === "All" || item.industry === filterValue;
+                    return matchesSearch && matchesFilter;
+                });
+                renderBusinesses(filteredData);
+            }
+        }
+
+        // Jab user type kare ya filter change kare tab auto update
+        searchBar.addEventListener("input", applySearchAndFilter);
+        filterDropdown.addEventListener("change", applySearchAndFilter);
+
+        // ------------------ LOGOUT ------------------
+        document.getElementById("logout-btn").addEventListener("click", () => {
+            signOut(auth).then(() => { window.location.href = "index.html"; });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup Profile - CreatorMatch</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50 flex items-center justify-center min-h-screen p-4 py-10">
+
+    <div class="bg-white max-w-2xl w-full rounded-3xl shadow-lg border border-gray-100 p-8">
+        
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-extrabold text-gray-900">Build Your Portfolio</h1>
+            <p class="text-gray-500 text-sm mt-2">Add your social links, bio, and a video to stand out to brands!</p>
+        </div>
+
+        <form class="space-y-5" id="setup-form">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Display Name *</label>
+                    <input type="text" id="c-name" required placeholder="e.g. Rahul Tech" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Niche / Category *</label>
+                    <select id="c-category" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition cursor-pointer">
+                        <option value="Tech & Gadgets">Tech & Gadgets</option>
+                        <option value="Fashion & Lifestyle">Fashion & Lifestyle</option>
+                        <option value="Gaming">Gaming</option>
+                        <option value="Education">Education</option>
+                        <option value="Food & Travel">Food & Travel</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Total Followers *</label>
+                    <input type="number" id="c-followers" required placeholder="e.g. 50000" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Profile Photo URL *</label>
+                    <input type="text" id="c-image" required placeholder="Paste an image link here" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">About You (Bio)</label>
+                <textarea id="c-bio" rows="3" placeholder="Tell brands about your content style..." class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition"></textarea>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Instagram Link</label>
+                    <input type="url" id="c-instagram" placeholder="https://instagram.com/yourprofile" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-pink-500 transition">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">LinkedIn Link</label>
+                    <input type="url" id="c-linkedin" placeholder="https://linkedin.com/in/yourprofile" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-600 transition">
+                </div>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">YouTube Video Link (Showcase)</label>
+                <input type="url" id="c-video" placeholder="e.g. https://www.youtube.com/watch?v=XYZ123" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-red-500 transition">
+            </div>
+
+            <button type="submit" id="save-btn" class="w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold rounded-xl hover:opacity-90 transition shadow-lg mt-6 text-lg">
+                Save Complete Profile
+            </button>
+        </form>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js"; 
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyACcJOwTJrBKKbE56gLtsE8U2JD2VxBIiQ",
+            authDomain: "creatormatch-7c723.firebaseapp.com",
+            projectId: "creatormatch-7c723",
+            storageBucket: "creatormatch-7c723.firebasestorage.app",
+            messagingSenderId: "62514210796",
+            appId: "1:62514210796:web:478775e3e03726693382c9",
+            measurementId: "G-0VN4N73DP1"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+            } else {
+                window.location.href = "auth.html";
+            }
+        });
+
+        const setupForm = document.getElementById("setup-form");
+        const saveBtn = document.getElementById("save-btn");
+
+        setupForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            if (!currentUser) return;
+
+            // NAYA: Saare naye fields ka data nikalo
+            const name = document.getElementById("c-name").value;
+            const category = document.getElementById("c-category").value;
+            const followers = parseInt(document.getElementById("c-followers").value);
+            const imageUrl = document.getElementById("c-image").value;
+            const bio = document.getElementById("c-bio").value || "No bio provided.";
+            const instagram = document.getElementById("c-instagram").value || "";
+            const linkedin = document.getElementById("c-linkedin").value || "";
+            const video = document.getElementById("c-video").value || "";
+
+            saveBtn.innerText = "Saving Profile...";
+            saveBtn.disabled = true;
+
+            try {
+                // Database mein saari naye details save karo
+                await setDoc(doc(db, "creators", currentUser.uid), {
+                    name: name,
+                    category: category,
+                    followers: followers,
+                    imageUrl: imageUrl,
+                    bio: bio,
+                    instagram: instagram,
+                    linkedin: linkedin,
+                    video: video,
+                    uid: currentUser.uid
+                });
+
+                alert("Profile Updated Successfully!");
+                window.location.href = "dashboard.html";
+
+            } catch (error) {
+                alert("Error saving profile: " + error.message);
+                saveBtn.innerText = "Save Complete Profile";
+                saveBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

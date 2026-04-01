@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up / Login - CreatorMatch</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body class="bg-gray-50 flex items-center justify-center min-h-screen p-4">
+
+    <div class="bg-white max-w-md w-full rounded-3xl shadow-lg border border-gray-100 p-8">
+        
+        <div class="text-center mb-8">
+            <div class="text-2xl font-extrabold text-blue-600 tracking-tight mb-2">
+                <a href="index.html">CreatorMatch</a>
+            </div>
+            <h1 class="text-2xl font-bold text-gray-900" id="form-title">Create an account</h1>
+            <p class="text-gray-500 text-sm mt-1" id="form-subtitle">Join the ultimate creator marketplace.</p>
+        </div>
+
+        <div id="role-selection" class="flex bg-gray-100 p-1 rounded-xl mb-6">
+            <button id="role-creator" class="flex-1 py-2 bg-white text-gray-900 font-bold rounded-lg shadow-sm text-sm transition">
+                I'm a Creator
+            </button>
+            <button id="role-business" class="flex-1 py-2 text-gray-500 font-bold rounded-lg text-sm hover:text-gray-900 transition">
+                I'm a Business
+            </button>
+        </div>
+
+        <form class="space-y-4" id="signup-form">
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Email Address</label>
+                <input type="email" id="signup-email" required placeholder="you@example.com" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition">
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Password (Min 6 chars)</label>
+                <input type="password" id="signup-password" required placeholder="••••••••" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition">
+            </div>
+            <button type="submit" class="w-full py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition shadow-md mt-2">
+                Create Account
+            </button>
+            <div class="text-center mt-6 text-sm text-gray-600">
+                Already have an account? <button type="button" id="show-login" class="text-blue-600 font-bold hover:underline">Log in</button>
+            </div>
+        </form>
+
+        <form class="space-y-4 hidden" id="login-form">
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Email Address</label>
+                <input type="email" id="login-email" required placeholder="you@example.com" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition">
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Password</label>
+                <input type="password" id="login-password" required placeholder="••••••••" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition">
+            </div>
+            <button type="submit" class="w-full py-3 bg-gray-900 text-white font-bold rounded-xl hover:bg-gray-800 transition shadow-md mt-2">
+                Log In
+            </button>
+            <div class="text-center mt-6 text-sm text-gray-600">
+                Don't have an account? <button type="button" id="show-signup" class="text-blue-600 font-bold hover:underline">Sign up</button>
+            </div>
+        </form>
+        
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+        // NAYA: signInWithEmailAndPassword import kiya
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js"; 
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyACcJOwTJrBKKbE56gLtsE8U2JD2VxBIiQ",
+            authDomain: "creatormatch-7c723.firebaseapp.com",
+            projectId: "creatormatch-7c723",
+            storageBucket: "creatormatch-7c723.firebasestorage.app",
+            messagingSenderId: "62514210796",
+            appId: "1:62514210796:web:478775e3e03726693382c9",
+            measurementId: "G-0VN4N73DP1"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // --- UI Toggle Logic (Login vs Signup) ---
+        const signupForm = document.getElementById("signup-form");
+        const loginForm = document.getElementById("login-form");
+        const roleSelection = document.getElementById("role-selection");
+        const formTitle = document.getElementById("form-title");
+        const formSubtitle = document.getElementById("form-subtitle");
+
+        document.getElementById("show-login").addEventListener("click", () => {
+            signupForm.classList.add("hidden");
+            roleSelection.classList.add("hidden");
+            loginForm.classList.remove("hidden");
+            formTitle.innerText = "Welcome back";
+            formSubtitle.innerText = "Enter your details to log in.";
+        });
+
+        document.getElementById("show-signup").addEventListener("click", () => {
+            loginForm.classList.add("hidden");
+            signupForm.classList.remove("hidden");
+            roleSelection.classList.remove("hidden");
+            formTitle.innerText = "Create an account";
+            formSubtitle.innerText = "Join the ultimate creator marketplace.";
+        });
+
+        // --- Role Selection Logic ---
+        let selectedRole = "creator"; 
+        const btnCreator = document.getElementById("role-creator");
+        const btnBusiness = document.getElementById("role-business");
+
+        btnCreator.addEventListener("click", () => {
+            selectedRole = "creator";
+            btnCreator.className = "flex-1 py-2 bg-white text-gray-900 font-bold rounded-lg shadow-sm text-sm transition";
+            btnBusiness.className = "flex-1 py-2 text-gray-500 font-bold rounded-lg text-sm hover:text-gray-900 transition";
+        });
+
+        btnBusiness.addEventListener("click", () => {
+            selectedRole = "business";
+            btnBusiness.className = "flex-1 py-2 bg-white text-gray-900 font-bold rounded-lg shadow-sm text-sm transition";
+            btnCreator.className = "flex-1 py-2 text-gray-500 font-bold rounded-lg text-sm hover:text-gray-900 transition";
+        });
+
+        // --- SIGN UP LOGIC ---
+        signupForm.addEventListener("submit", async (e) => {
+            e.preventDefault(); 
+            const email = document.getElementById("signup-email").value;
+            const password = document.getElementById("signup-password").value;
+
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+                await setDoc(doc(db, "users", user.uid), {
+                    email: user.email,
+                    role: selectedRole,
+                    createdAt: new Date()
+                });
+                alert("Account created! Redirecting...");
+                window.location.href = "dashboard.html";
+            } catch (error) {
+                alert("Error: " + error.message);
+            }
+        });
+
+        // --- LOGIN LOGIC ---
+        loginForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const email = document.getElementById("login-email").value;
+            const password = document.getElementById("login-password").value;
+
+            try {
+                // Firebase se login karne ko kaho
+                await signInWithEmailAndPassword(auth, email, password);
+                alert("Login successful! Redirecting...");
+                window.location.href = "dashboard.html";
+            } catch (error) {
+                alert("Invalid Email or Password. Please try again.");
+            }
+        });
+    </script>
+</body>
+</html>
