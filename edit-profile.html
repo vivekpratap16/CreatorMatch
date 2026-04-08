@@ -7,199 +7,218 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
-        body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            background-color: #f8fafc;
-            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
-            background-size: 30px 30px;
-        }
-        .text-gradient {
-            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .premium-card {
-            background: white;
-            border-radius: 2rem;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
-            border: 1px solid rgba(226, 232, 240, 0.8);
-        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; background-color: #f8fafc; }
+        
+        .blob { position: fixed; filter: blur(80px); z-index: -1; opacity: 0.5; animation: float 10s infinite ease-in-out alternate; }
+        @keyframes float { 0% { transform: translateY(0px) scale(1); } 100% { transform: translateY(-50px) scale(1.1); } }
+        .premium-card { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 2rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1); border: 1px solid rgba(255, 255, 255, 0.6); }
+        .text-gradient { background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     </style>
 </head>
-<body class="flex flex-col min-h-screen">
+<body class="flex flex-col items-center justify-center min-h-screen relative p-4 py-12">
 
-    <!-- Header -->
-    <header class="flex justify-between items-center py-5 px-8 bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-100 sticky top-0 z-40">
-        <div class="text-2xl font-extrabold text-gradient tracking-tight cursor-pointer hover:opacity-80 transition">
-            <a href="index.html">CreatorMatch.</a>
-        </div>
-        <div>
-            <a href="dashboard.html" class="text-gray-600 font-bold hover:text-blue-600 transition flex items-center gap-2">
+    <div class="blob bg-blue-300 w-96 h-96 rounded-full top-[-10%] left-[-10%]"></div>
+    <div class="blob bg-purple-300 w-96 h-96 rounded-full bottom-[-10%] right-[-10%]" style="animation-delay: 3s;"></div>
+
+    <div class="text-center mb-8 relative z-10">
+        <h2 class="text-2xl font-extrabold text-gradient mb-1 tracking-tight cursor-pointer" onclick="safeNavigate('index.html')">CreatorMatch.</h2>
+        <h1 class="text-4xl font-extrabold text-gray-900">Update Profile ⚙️</h1>
+        <p class="text-gray-500 font-semibold mt-2">Keep your portfolio fresh and updated!</p>
+    </div>
+
+    <div class="premium-card max-w-2xl w-full p-10 relative z-10">
+        
+        <div class="flex justify-between items-center mb-6 border-b border-gray-100 pb-4">
+            <div onclick="safeNavigate('dashboard.html')" class="cursor-pointer text-gray-600 font-bold hover:text-blue-600 transition flex items-center gap-2">
                 <span>←</span> Back to Dashboard
-            </a>
+            </div>
         </div>
-    </header>
 
-    <main class="flex-grow flex items-center justify-center p-4 py-12 relative z-10">
-        <div class="premium-card max-w-2xl w-full p-10">
-            
-            <div class="text-center mb-10">
-                <div class="w-16 h-16 bg-gray-100 rounded-full mx-auto flex items-center justify-center mb-4">
-                    <span class="text-2xl">⚙️</span>
+        <div class="flex justify-center mb-6">
+            <div class="relative group cursor-pointer">
+                <img id="current-img-preview" src="https://via.placeholder.com/100" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg">
+                <div class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span class="text-white text-xs font-bold">Current</span>
                 </div>
-                <h1 class="text-3xl font-extrabold text-gray-900">Profile Settings</h1>
-                <p class="text-gray-500 font-semibold mt-2" id="loading-text">Loading your data...</p>
+            </div>
+        </div>
+
+        <form class="space-y-6" id="edit-form">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-extrabold text-gray-700 mb-2 uppercase tracking-wide">Display Name</label>
+                    <input type="text" id="e-name" required class="w-full px-5 py-4 bg-white border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition text-sm font-bold shadow-sm">
+                </div>
+                <div>
+                    <label class="block text-sm font-extrabold text-gray-700 mb-2 uppercase tracking-wide">Niche / Category</label>
+                    <select id="e-category" class="w-full px-5 py-4 bg-white border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition text-sm font-bold shadow-sm cursor-pointer">
+                        <option value="Tech & Gadgets">Tech & Gadgets</option>
+                        <option value="Fashion & Lifestyle">Fashion & Lifestyle</option>
+                        <option value="Gaming">Gaming</option>
+                        <option value="Education">Education</option>
+                        <option value="Food & Travel">Food & Travel</option>
+                    </select>
+                </div>
             </div>
 
-            <!-- CREATOR FORM -->
-            <form class="space-y-6 hidden" id="creator-form">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label class="block text-sm font-extrabold text-gray-700 mb-2 uppercase tracking-wide">Display Name</label>
-                        <input type="text" id="c-name" required class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:bg-white transition text-sm font-bold shadow-inner">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-extrabold text-gray-700 mb-2 uppercase tracking-wide">Category</label>
-                        <select id="c-category" class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:bg-white transition text-sm font-bold shadow-inner cursor-pointer">
-                            <option value="Tech & Gadgets">Tech & Gadgets</option>
-                            <option value="Fashion & Lifestyle">Fashion & Lifestyle</option>
-                            <option value="Gaming">Gaming</option>
-                            <option value="Education">Education</option>
-                            <option value="Food & Travel">Food & Travel</option>
-                        </select>
-                    </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-extrabold text-gray-700 mb-2 uppercase tracking-wide">Total Followers</label>
+                    <input type="number" id="e-followers" required class="w-full px-5 py-4 bg-white border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition text-sm font-bold shadow-sm">
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label class="block text-sm font-extrabold text-gray-700 mb-2 uppercase tracking-wide">Total Followers</label>
-                        <input type="number" id="c-followers" required class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:bg-white transition text-sm font-bold shadow-inner">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-extrabold text-gray-700 mb-2 uppercase tracking-wide">Profile Photo URL</label>
-                        <input type="text" id="c-image" required class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:bg-white transition text-sm font-bold shadow-inner">
-                    </div>
+                
+                <div>
+                    <label class="block text-sm font-extrabold text-gray-700 mb-2 uppercase tracking-wide">Change Photo (Optional)</label>
+                    <input type="file" id="e-image-file" accept="image/*" class="w-full px-4 py-3 bg-white border border-gray-200 rounded-2xl file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition shadow-sm cursor-pointer text-gray-500 font-medium">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-extrabold text-gray-700 mb-2 uppercase tracking-wide">About You (Bio)</label>
+                <textarea id="e-bio" rows="3" class="w-full px-5 py-4 bg-white border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition text-sm font-bold shadow-sm"></textarea>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-extrabold text-gray-700 mb-2 uppercase tracking-wide">Instagram Link</label>
+                    <input type="url" id="e-instagram" class="w-full px-5 py-4 bg-white border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-pink-500/50 transition text-sm font-bold shadow-sm">
                 </div>
                 <div>
-                    <label class="block text-sm font-extrabold text-gray-700 mb-2 uppercase tracking-wide">About You (Bio)</label>
-                    <textarea id="c-bio" rows="3" class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:bg-white transition text-sm font-bold shadow-inner"></textarea>
+                    <label class="block text-sm font-extrabold text-gray-700 mb-2 uppercase tracking-wide">LinkedIn Link</label>
+                    <input type="url" id="e-linkedin" class="w-full px-5 py-4 bg-white border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition text-sm font-bold shadow-sm">
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label class="block text-sm font-extrabold text-gray-700 mb-2 uppercase tracking-wide">Instagram Link</label>
-                        <input type="url" id="c-instagram" class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-pink-500/50 focus:bg-white transition text-sm font-bold shadow-inner">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-extrabold text-gray-700 mb-2 uppercase tracking-wide">LinkedIn Link</label>
-                        <input type="url" id="c-linkedin" class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:bg-white transition text-sm font-bold shadow-inner">
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-sm font-extrabold text-gray-700 mb-2 uppercase tracking-wide">YouTube Video Link</label>
-                    <input type="url" id="c-video" class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:bg-white transition text-sm font-bold shadow-inner">
-                </div>
-                <button type="submit" id="save-creator-btn" class="w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-extrabold rounded-2xl hover:shadow-lg hover:shadow-purple-500/30 transform hover:-translate-y-0.5 transition-all duration-300 text-lg mt-8">
+            </div>
+
+            <div class="flex gap-4 mt-8">
+                <button type="button" onclick="safeNavigate('dashboard.html')" class="w-1/3 py-4 bg-gray-100 text-gray-700 font-extrabold rounded-2xl hover:bg-gray-200 transition-all text-center text-lg flex justify-center items-center">
+                    Cancel
+                </button>
+                <button type="submit" id="update-btn" class="w-2/3 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-extrabold rounded-2xl hover:shadow-lg hover:shadow-purple-500/30 transform hover:-translate-y-0.5 transition-all duration-300 text-lg flex justify-center items-center gap-2">
                     Save Changes
                 </button>
-            </form>
+            </div>
+        </form>
+    </div>
 
-            <!-- BUSINESS FORM -->
-            <form class="space-y-6 hidden" id="business-form">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label class="block text-sm font-extrabold text-gray-700 mb-2 uppercase tracking-wide">Company / Brand Name</label>
-                        <input type="text" id="b-name" required class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:bg-white transition text-sm font-bold shadow-inner">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-extrabold text-gray-700 mb-2 uppercase tracking-wide">Industry</label>
-                        <input type="text" id="b-industry" required class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:bg-white transition text-sm font-bold shadow-inner">
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-sm font-extrabold text-gray-700 mb-2 uppercase tracking-wide">Company Logo URL</label>
-                    <input type="url" id="b-logo" required class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:bg-white transition text-sm font-bold shadow-inner">
-                </div>
-                <div>
-                    <label class="block text-sm font-extrabold text-gray-700 mb-2 uppercase tracking-wide">Website URL</label>
-                    <input type="url" id="b-website" class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:bg-white transition text-sm font-bold shadow-inner">
-                </div>
-                <button type="submit" id="save-business-btn" class="w-full py-4 bg-gray-900 text-white font-extrabold rounded-2xl hover:shadow-lg hover:bg-gray-800 transform hover:-translate-y-0.5 transition-all duration-300 text-lg mt-8">
-                    Save Changes
-                </button>
-            </form>
-
-        </div>
-    </main>
-
-    <!-- Firebase Scripts -->
+    <!-- Firebase Scripts (Updated to 11.6.1) -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js"; 
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js"; 
+        import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
 
-        const firebaseConfig = { apiKey: "AIzaSyACcJOwTJrBKKbE56gLtsE8U2JD2VxBIiQ", authDomain: "creatormatch-7c723.firebaseapp.com", projectId: "creatormatch-7c723", storageBucket: "creatormatch-7c723.firebasestorage.app", messagingSenderId: "62514210796", appId: "1:62514210796:web:478775e3e03726693382c9" };
-        const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
+        // Safe Navigation function for sandboxed iframes
+        window.safeNavigate = function(url) {
+            try {
+                if (window.location.href.startsWith('about:') || window.location.href.startsWith('data:')) {
+                    document.body.innerHTML = `
+                        <div class="flex items-center justify-center min-h-screen bg-slate-50 relative z-50">
+                            <div class="bg-white p-10 rounded-[2rem] shadow-2xl text-center max-w-md w-full border border-gray-100">
+                                <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">🔗</div>
+                                <h2 class="text-2xl font-extrabold text-gray-900 mb-2">Navigation Blocked</h2>
+                                <p class="text-gray-500 font-medium mb-6">You are previewing in an iframe. Navigation to <b>${url}</b> is disabled here.</p>
+                                <button onclick="location.reload()" class="w-full py-3 bg-gray-900 text-white rounded-xl font-bold">Refresh Page</button>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+                window.location.href = url;
+            } catch (error) {
+                console.error("Navigation error:", error);
+            }
+        };
 
-        const creatorForm = document.getElementById("creator-form");
-        const businessForm = document.getElementById("business-form");
+        const firebaseConfig = { 
+            apiKey: "AIzaSyACcJOwTJrBKKbE56gLtsE8U2JD2VxBIiQ", 
+            authDomain: "creatormatch-7c723.firebaseapp.com", 
+            projectId: "creatormatch-7c723", 
+            storageBucket: "creatormatch-7c723.firebasestorage.app", 
+            messagingSenderId: "62514210796", 
+            appId: "1:62514210796:web:478775e3e03726693382c9" 
+        };
         
+        const app = initializeApp(firebaseConfig); 
+        const auth = getAuth(app); 
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+
+        let currentUser = null;
+        let existingImageUrl = ""; 
+
+        // Load existing data
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                const userDoc = await getDoc(doc(db, "users", user.uid));
-                if (userDoc.exists()) {
-                    document.getElementById("loading-text").innerText = "Update your details below to stand out.";
-                    if (userDoc.data().role === "creator") {
-                        creatorForm.classList.remove("hidden");
-                        const creatorDoc = await getDoc(doc(db, "creators", user.uid));
-                        if (creatorDoc.exists()) {
-                            const data = creatorDoc.data();
-                            document.getElementById("c-name").value = data.name || "";
-                            document.getElementById("c-category").value = data.category || "Tech & Gadgets";
-                            document.getElementById("c-followers").value = data.followers || "";
-                            document.getElementById("c-image").value = data.imageUrl || "";
-                            document.getElementById("c-bio").value = data.bio || "";
-                            document.getElementById("c-instagram").value = data.instagram || "";
-                            document.getElementById("c-linkedin").value = data.linkedin || "";
-                            document.getElementById("c-video").value = data.video || "";
+                currentUser = user;
+                try {
+                    const docSnap = await getDoc(doc(db, "creators", user.uid));
+                    if (docSnap.exists()) {
+                        const data = docSnap.data();
+                        document.getElementById("e-name").value = data.name || "";
+                        document.getElementById("e-category").value = data.category || "Tech & Gadgets";
+                        document.getElementById("e-followers").value = data.followers || "";
+                        document.getElementById("e-bio").value = data.bio || "";
+                        document.getElementById("e-instagram").value = data.instagram || "";
+                        document.getElementById("e-linkedin").value = data.linkedin || "";
+                        
+                        existingImageUrl = data.imageUrl || "";
+                        if(existingImageUrl) {
+                            document.getElementById("current-img-preview").src = existingImageUrl;
                         }
                     } else {
-                        businessForm.classList.remove("hidden");
-                        const businessDoc = await getDoc(doc(db, "businesses", user.uid));
-                        if (businessDoc.exists()) {
-                            const data = businessDoc.data();
-                            document.getElementById("b-name").value = data.companyName || "";
-                            document.getElementById("b-industry").value = data.industry || "";
-                            document.getElementById("b-logo").value = data.logoUrl || "";
-                            document.getElementById("b-website").value = data.website || "";
-                        }
+                        alert("No profile data found! Please set up your profile first.");
+                        safeNavigate("setup.html");
                     }
+                } catch (error) {
+                    console.error("Error fetching doc:", error);
                 }
-            } else window.location.href = "auth.html";
+            } else {
+                safeNavigate("auth.html");
+            }
         });
 
-        creatorForm.addEventListener("submit", async (e) => {
-            e.preventDefault(); const btn = document.getElementById("save-creator-btn"); btn.innerText = "Saving..."; btn.disabled = true;
-            try {
-                await setDoc(doc(db, "creators", auth.currentUser.uid), {
-                    name: document.getElementById("c-name").value, category: document.getElementById("c-category").value,
-                    followers: parseInt(document.getElementById("c-followers").value), imageUrl: document.getElementById("c-image").value,
-                    bio: document.getElementById("c-bio").value, instagram: document.getElementById("c-instagram").value,
-                    linkedin: document.getElementById("c-linkedin").value, video: document.getElementById("c-video").value,
-                    uid: auth.currentUser.uid
-                }, { merge: true });
-                alert("Profile Updated Successfully!"); window.location.href = "dashboard.html";
-            } catch (error) { alert("Error: " + error.message); btn.innerText = "Save Changes"; btn.disabled = false; }
-        });
+        // Form Submit
+        const editForm = document.getElementById("edit-form");
+        const updateBtn = document.getElementById("update-btn");
 
-        businessForm.addEventListener("submit", async (e) => {
-            e.preventDefault(); const btn = document.getElementById("save-business-btn"); btn.innerText = "Saving..."; btn.disabled = true;
+        editForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            if (!currentUser) return;
+
+            updateBtn.innerHTML = `<div class="w-6 h-6 border-4 border-white border-t-transparent rounded-full animate-spin"></div> Updating...`; 
+            updateBtn.disabled = true;
+
             try {
-                await setDoc(doc(db, "businesses", auth.currentUser.uid), {
-                    companyName: document.getElementById("b-name").value, industry: document.getElementById("b-industry").value,
-                    logoUrl: document.getElementById("b-logo").value, website: document.getElementById("b-website").value,
-                    uid: auth.currentUser.uid
-                }, { merge: true });
-                alert("Business Profile Updated!"); window.location.href = "dashboard.html";
-            } catch (error) { alert("Error: " + error.message); btn.innerText = "Save Changes"; btn.disabled = false; }
+                const fileInput = document.getElementById("e-image-file");
+                const file = fileInput.files[0];
+                let finalImageUrl = existingImageUrl;
+
+                // Nayi photo upload
+                if (file) {
+                    const storageRef = ref(storage, 'profile_images/' + currentUser.uid + '_' + file.name);
+                    const uploadTask = await uploadBytesResumable(storageRef, file);
+                    finalImageUrl = await getDownloadURL(uploadTask.ref);
+                }
+
+                // Database update
+                await updateDoc(doc(db, "creators", currentUser.uid), {
+                    name: document.getElementById("e-name").value,
+                    category: document.getElementById("e-category").value,
+                    followers: parseInt(document.getElementById("e-followers").value),
+                    imageUrl: finalImageUrl,
+                    bio: document.getElementById("e-bio").value,
+                    instagram: document.getElementById("e-instagram").value,
+                    linkedin: document.getElementById("e-linkedin").value
+                });
+
+                alert("Profile Updated Successfully!"); 
+                safeNavigate("dashboard.html");
+
+            } catch (error) {
+                alert("Error updating profile: " + error.message);
+                updateBtn.innerText = "Save Changes"; 
+                updateBtn.disabled = false;
+            }
         });
     </script>
 </body>
