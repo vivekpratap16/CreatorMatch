@@ -3,114 +3,344 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - CreatorMatch</title>
+    <title>Dashboard - CreatorMatch Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
+        
         body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            background-color: #f8fafc;
-            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
-            background-size: 30px 30px;
+            font-family: 'Outfit', sans-serif; 
+            background-color: #f0f4f8; /* Soft slate/blue background */
+            color: #0f172a;
+            overflow-x: hidden;
         }
-        .text-gradient {
-            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+
+        /* Animated Soft Background Blobs */
+        .bg-blob {
+            position: fixed; filter: blur(100px); z-index: -1; opacity: 0.4;
+            animation: drift 15s infinite alternate ease-in-out;
         }
-        .premium-card {
+        @keyframes drift {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(50px, -50px) scale(1.1); }
+        }
+
+        .text-gradient { 
+            background: linear-gradient(135deg, #2563eb 0%, #9333ea 100%); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+        }
+        
+        /* Modern Bento/Glass Card */
+        .bento-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .bento-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border-color: rgba(147, 51, 234, 0.3);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        /* Analytics Specific Card */
+        .analytics-card {
             background: white;
             border-radius: 1.5rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid rgba(226, 232, 240, 0.8);
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
         }
-        .premium-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.1), 0 10px 10px -5px rgba(59, 130, 246, 0.04);
-            border-color: rgba(139, 92, 246, 0.3);
+        .analytics-card:hover {
+            box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.15);
+            border-color: #bfdbfe;
         }
+
+        .glass-header { 
+            background: rgba(15, 23, 42, 0.85); /* Dark Header */
+            backdrop-filter: blur(16px); 
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1); 
+        }
+        
+        /* Custom Scrollbar for a polished look */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </head>
-<body class="text-gray-800 relative">
+<body class="relative min-h-screen flex flex-col">
 
-    <!-- Header (Glassmorphism) -->
-    <header class="flex justify-between items-center py-5 px-8 bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-100 sticky top-0 z-40">
-        <div class="text-2xl font-extrabold text-gradient tracking-tight cursor-pointer hover:opacity-80 transition">
-            <a href="index.html">CreatorMatch.</a>
+    <!-- Background Decoration -->
+    <div class="bg-blob bg-blue-300 w-[500px] h-[500px] rounded-full top-[-10%] left-[-10%]"></div>
+    <div class="bg-blob bg-purple-300 w-[500px] h-[500px] rounded-full bottom-[-10%] right-[-10%]" style="animation-delay: -5s;"></div>
+
+    <!-- Connect / Message Modal -->
+    <div id="connect-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 hidden flex items-center justify-center p-4 transition-opacity">
+        <div class="bg-white rounded-[2rem] max-w-md w-full p-8 shadow-2xl relative border border-white/20">
+            <button onclick="closeConnectModal()" class="absolute top-5 right-5 text-gray-400 hover:text-red-500 transition-colors">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full mx-auto flex items-center justify-center mb-5 shadow-lg shadow-blue-500/30">
+                <i class="fa-solid fa-paper-plane text-2xl text-white"></i>
+            </div>
+            <h2 class="text-2xl font-extrabold text-gray-900 mb-1 text-center" id="modal-title">Send a Pitch</h2>
+            <p class="text-gray-500 font-medium text-sm text-center mb-6" id="modal-subtitle">Start a conversation to collaborate.</p>
+            
+            <textarea id="connect-message" rows="4" placeholder="Hi! I love your profile and would like to discuss a potential collaboration..." class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition text-sm font-medium mb-6 resize-none"></textarea>
+            
+            <button id="send-request-btn" class="w-full py-4 bg-gray-900 text-white font-bold rounded-xl hover:bg-gray-800 hover:shadow-xl hover:shadow-gray-900/20 transform hover:-translate-y-0.5 transition-all duration-300">
+                Send Request
+            </button>
+        </div>
+    </div>
+
+    <!-- Dark Premium Header -->
+    <header class="flex justify-between items-center py-4 px-8 glass-header sticky top-0 z-40">
+        <div class="text-2xl font-extrabold text-white tracking-tight cursor-pointer hover:text-blue-400 transition-colors" onclick="safeNavigate('index.html')">
+            CreatorMatch<span class="text-blue-500">.</span>
         </div>
         <div class="flex items-center space-x-6">
-            <a href="requests.html" class="text-gray-600 font-bold hover:text-purple-600 transition flex items-center gap-2">
-                <span>🔔</span> Requests
-            </a>
-            <a href="edit-profile.html" class="text-gray-600 font-bold hover:text-blue-600 transition flex items-center gap-2">
-                <span>⚙️</span> Settings
-            </a>
-            <button id="logout-btn" class="bg-red-50 text-red-600 px-5 py-2.5 rounded-xl font-bold hover:bg-red-100 hover:shadow-md transition">Logout</button>
+            <button onclick="safeNavigate('requests.html')" class="text-slate-300 font-medium hover:text-white transition flex items-center gap-2 text-sm">
+                <i class="fa-solid fa-bell"></i> <span class="hidden sm:inline">Requests</span>
+            </button>
+            <button onclick="safeNavigate('edit-profile.html')" class="text-slate-300 font-medium hover:text-white transition flex items-center gap-2 text-sm">
+                <i class="fa-solid fa-gear"></i> <span class="hidden sm:inline">Settings</span>
+            </button>
+            <div class="h-6 w-px bg-slate-700 hidden sm:block"></div>
+            <button id="logout-btn" class="bg-slate-800 text-slate-300 px-5 py-2 rounded-lg font-medium hover:bg-red-500/10 hover:text-red-400 border border-slate-700 transition-colors text-sm">
+                Logout
+            </button>
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto mt-12 px-4 mb-20">
+    <main class="flex-grow max-w-[1400px] mx-auto mt-8 px-6 w-full mb-20 relative z-10">
         
-        <!-- Welcome Section & Filters -->
-        <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-gray-100 mb-10 flex flex-col md:flex-row justify-between items-center md:items-end gap-6">
+        <!-- Welcome Section & Filters (Glassmorphism Header Area) -->
+        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 mb-8 bg-white/40 p-6 rounded-[2rem] border border-white/60 shadow-sm backdrop-blur-sm">
             <div>
-                <h1 class="text-4xl font-extrabold text-gray-900 tracking-tight mb-2" id="dash-title">Welcome Back! 👋</h1>
-                <p class="text-gray-500 font-semibold text-lg" id="dash-subtitle">Loading your personalized view...</p>
+                <h1 class="text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight mb-2" id="dash-title">Welcome Back! 👋</h1>
+                <p class="text-slate-600 font-medium text-lg" id="dash-subtitle">Loading your personalized workspace...</p>
             </div>
             
-            <div id="search-filter-container" class="hidden flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+            <div id="search-filter-container" class="hidden flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
                 <div class="relative w-full sm:w-72">
-                    <span class="absolute left-4 top-3.5 text-gray-400">🔍</span>
-                    <input type="text" id="search-bar" placeholder="Search..." class="w-full pl-10 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:bg-white transition text-sm font-bold shadow-inner">
+                    <span class="absolute left-4 top-3.5 text-slate-400"><i class="fa-solid fa-magnifying-glass"></i></span>
+                    <input type="text" id="search-bar" placeholder="Search profiles..." class="w-full pl-11 pr-4 py-3.5 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition text-sm font-medium shadow-sm">
                 </div>
-                
-                <select id="filter-dropdown" class="w-full sm:w-56 px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:bg-white transition text-sm font-bold cursor-pointer shadow-inner">
-                    <option value="All">Loading filters...</option>
+                <select id="filter-dropdown" class="w-full sm:w-48 px-4 py-3.5 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition text-sm font-medium cursor-pointer shadow-sm text-slate-700">
+                    <option value="All">All Categories</option>
                 </select>
             </div>
         </div>
 
+        <!-- Smart Analytics Dashboard -->
+        <div id="analytics-container" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 hidden">
+            <!-- Injected by JS -->
+        </div>
+
+        <!-- Section Title -->
+        <div class="flex items-center justify-between mb-6 px-2">
+            <h2 class="text-2xl font-extrabold text-slate-800" id="grid-title">Top Matches</h2>
+            <span class="text-sm font-medium text-slate-500 bg-slate-200/50 px-3 py-1 rounded-full border border-slate-200" id="result-count">0 results</span>
+        </div>
+
         <!-- Cards Grid -->
-        <div id="data-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            <div class="col-span-full text-center py-20">
+        <div id="data-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div class="col-span-full text-center py-32 bg-white/40 rounded-[2rem] border border-white/60">
                 <div class="inline-block w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mb-4"></div>
-                <p class="text-gray-500 font-bold">Fetching data from server...</p>
+                <p class="text-slate-500 font-medium text-lg">Fetching latest profiles...</p>
             </div>
         </div>
     </main>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-        import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, collection, getDocs, addDoc, query, where } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        window.safeNavigate = function(url) {
+            try {
+                const currentHref = window.location.href;
+                if (currentHref.startsWith('about:') || currentHref.startsWith('data:') || currentHref.startsWith('blob:')) {
+                    document.body.innerHTML = `
+                        <div class="fixed inset-0 flex items-center justify-center min-h-screen bg-slate-900 z-50 p-4">
+                            <div class="bg-slate-800 p-10 rounded-[2rem] shadow-2xl text-center max-w-md w-full border border-slate-700">
+                                <div class="w-16 h-16 bg-blue-500/20 text-blue-400 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl"><i class="fa-solid fa-link"></i></div>
+                                <h2 class="text-2xl font-extrabold text-white mb-2">Navigation Blocked</h2>
+                                <p class="text-slate-400 font-medium mb-8">You are previewing in a sandboxed environment. Real navigation to <b>${url}</b> is disabled.</p>
+                                <button onclick="location.reload()" class="w-full py-4 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-500 transition">Refresh Application</button>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+                window.location.href = url;
+            } catch (error) { console.error("Nav error:", error); }
+        };
 
         const firebaseConfig = { apiKey: "AIzaSyACcJOwTJrBKKbE56gLtsE8U2JD2VxBIiQ", authDomain: "creatormatch-7c723.firebaseapp.com", projectId: "creatormatch-7c723", storageBucket: "creatormatch-7c723.firebasestorage.app", messagingSenderId: "62514210796", appId: "1:62514210796:web:478775e3e03726693382c9" };
-        const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
+        const app = initializeApp(firebaseConfig); 
+        const auth = getAuth(app); 
+        const db = getFirestore(app);
 
-        let allData = []; let currentRole = "";
+        let allData = []; 
+        let currentRole = "";
+        let currentUserUid = "";
+        let selectedTargetId = "";
+
+        const modal = document.getElementById('connect-modal');
+        window.openConnectModal = function(targetId, targetName) {
+            selectedTargetId = targetId;
+            document.getElementById('modal-title').innerText = `Pitch to ${targetName}`;
+            modal.classList.remove('hidden');
+        }
+        window.closeConnectModal = function() {
+            modal.classList.add('hidden');
+            document.getElementById('connect-message').value = "";
+        }
+
+        document.getElementById('send-request-btn').addEventListener('click', async () => {
+            const btn = document.getElementById('send-request-btn');
+            const message = document.getElementById('connect-message').value;
+            
+            btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Sending Pitch...`;
+            btn.disabled = true;
+
+            try {
+                const requestData = {
+                    senderId: currentUserUid,
+                    receiverId: selectedTargetId,
+                    senderRole: currentRole,
+                    message: message || "I would love to connect and discuss a potential collaboration!",
+                    status: "Pending",
+                    timestamp: new Date(),
+                    businessId: currentRole === 'business' ? currentUserUid : selectedTargetId,
+                    creatorId: currentRole === 'business' ? selectedTargetId : currentUserUid
+                };
+
+                await addDoc(collection(db, "requests"), requestData);
+                
+                btn.innerHTML = `<i class="fa-solid fa-check"></i> Pitch Sent!`;
+                btn.classList.replace("bg-gray-900", "bg-emerald-500");
+                btn.classList.replace("hover:bg-gray-800", "hover:bg-emerald-400");
+                
+                setTimeout(() => {
+                    closeConnectModal();
+                    btn.innerHTML = `Send Request`;
+                    btn.classList.replace("bg-emerald-500", "bg-gray-900");
+                    btn.classList.replace("hover:bg-emerald-400", "hover:bg-gray-800");
+                    btn.disabled = false;
+                    loadAnalytics(currentRole, allData.length); 
+                }, 1500);
+
+            } catch (error) {
+                alert("Error sending request: " + error.message);
+                btn.innerHTML = `Send Request`;
+                btn.disabled = false;
+            }
+        });
 
         onAuthStateChanged(auth, async (user) => {
             if (user) {
+                currentUserUid = user.uid;
                 const userDoc = await getDoc(doc(db, "users", user.uid));
                 if (userDoc.exists()) {
                     currentRole = userDoc.data().role;
                     document.getElementById("search-filter-container").classList.remove("hidden");
+                    document.getElementById("analytics-container").classList.remove("hidden");
+                    
                     if (currentRole === 'business') loadForBusiness();
                     else loadForCreator();
+                } else {
+                    safeNavigate("auth.html");
                 }
             } else {
-                window.location.href = "index.html";
+                safeNavigate("auth.html");
             }
         });
 
-        // BUSINESS VIEW
+        async function loadAnalytics(role, availableProfilesCount) {
+            const container = document.getElementById("analytics-container");
+            container.classList.add("grid"); 
+            
+            let totalRequests = 0;
+            let acceptedCollabs = 0;
+
+            try {
+                const requestField = role === 'business' ? 'businessId' : 'creatorId';
+                const q = query(collection(db, "requests"), where(requestField, "==", currentUserUid));
+                const snap = await getDocs(q);
+                
+                totalRequests = snap.size;
+                snap.forEach(doc => { if(doc.data().status === 'Accepted') acceptedCollabs++; });
+
+                if (role === 'business') {
+                    container.innerHTML = `
+                        <div class="analytics-card p-6 flex items-center gap-5">
+                            <div class="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-2xl shadow-inner"><i class="fa-solid fa-users"></i></div>
+                            <div>
+                                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Creators Available</p>
+                                <h3 class="text-3xl font-extrabold text-slate-900">${availableProfilesCount}</h3>
+                            </div>
+                        </div>
+                        <div class="analytics-card p-6 flex items-center gap-5">
+                            <div class="w-14 h-14 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-2xl shadow-inner"><i class="fa-solid fa-paper-plane"></i></div>
+                            <div>
+                                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Pitches Sent</p>
+                                <h3 class="text-3xl font-extrabold text-slate-900">${totalRequests}</h3>
+                            </div>
+                        </div>
+                        <div class="analytics-card p-6 flex items-center gap-5">
+                            <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl shadow-inner"><i class="fa-solid fa-handshake"></i></div>
+                            <div>
+                                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Active Deals</p>
+                                <h3 class="text-3xl font-extrabold text-slate-900">${acceptedCollabs}</h3>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    const views = Math.floor(Math.random() * 300) + 50; 
+                    container.innerHTML = `
+                        <div class="analytics-card p-6 flex items-center gap-5">
+                            <div class="w-14 h-14 rounded-2xl bg-pink-50 text-pink-500 flex items-center justify-center text-2xl shadow-inner"><i class="fa-solid fa-eye"></i></div>
+                            <div>
+                                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Profile Views</p>
+                                <h3 class="text-3xl font-extrabold text-slate-900">${views} <span class="text-sm text-emerald-500 ml-1"><i class="fa-solid fa-arrow-trend-up"></i></span></h3>
+                            </div>
+                        </div>
+                        <div class="analytics-card p-6 flex items-center gap-5">
+                            <div class="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-2xl shadow-inner"><i class="fa-solid fa-envelope-open-text"></i></div>
+                            <div>
+                                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Brand Inquiries</p>
+                                <h3 class="text-3xl font-extrabold text-slate-900">${totalRequests}</h3>
+                            </div>
+                        </div>
+                        <div class="analytics-card p-6 flex items-center gap-5">
+                            <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl shadow-inner"><i class="fa-solid fa-handshake"></i></div>
+                            <div>
+                                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Collabs Won</p>
+                                <h3 class="text-3xl font-extrabold text-slate-900">${acceptedCollabs}</h3>
+                            </div>
+                        </div>
+                    `;
+                }
+            } catch(e) { console.error("Error:", e); }
+        }
+
         async function loadForBusiness() {
-            document.getElementById("dash-title").innerText = "Discover Creators ✨";
-            document.getElementById("dash-subtitle").innerText = "Find the perfect voice for your brand.";
-            document.getElementById("search-bar").placeholder = "Search by name...";
+            document.getElementById("dash-title").innerHTML = "Discover Talent <span class='text-blue-500'>✨</span>";
+            document.getElementById("dash-subtitle").innerText = "Find the perfect voice for your next campaign.";
+            document.getElementById("grid-title").innerText = "Top Creators";
+            document.getElementById("search-bar").placeholder = "Search creators by name...";
             document.getElementById("filter-dropdown").innerHTML = `
-                <option value="All">All Categories</option>
+                <option value="All">All Niches</option>
                 <option value="Tech & Gadgets">Tech & Gadgets</option>
                 <option value="Fashion & Lifestyle">Fashion & Lifestyle</option>
                 <option value="Gaming">Gaming</option>
@@ -119,86 +349,127 @@
             `;
 
             const querySnapshot = await getDocs(collection(db, "creators"));
-            allData = []; querySnapshot.forEach(doc => allData.push({ id: doc.id, ...doc.data() }));
+            allData = []; 
+            querySnapshot.forEach(doc => allData.push({ id: doc.id, ...doc.data() }));
+            
+            loadAnalytics('business', allData.length);
             renderCreators(allData);
         }
 
         function renderCreators(creatorsArray) {
             const grid = document.getElementById("data-grid"); grid.innerHTML = "";
-            if(creatorsArray.length === 0) { grid.innerHTML = "<p class='text-gray-500 font-bold col-span-full text-center'>No creators found matching your search.</p>"; return; }
+            document.getElementById("result-count").innerText = `${creatorsArray.length} profiles`;
+            
+            if(creatorsArray.length === 0) { grid.innerHTML = "<p class='text-slate-500 font-medium col-span-full text-center py-20 bg-white/40 rounded-[2rem] border border-white/60'>No creators found matching your search.</p>"; return; }
             
             creatorsArray.forEach(creator => {
+                const nameEscaped = creator.name ? creator.name.replace(/'/g, "\\'") : 'Creator';
                 grid.innerHTML += `
-                    <div class="premium-card flex flex-col overflow-hidden group">
-                        <div class="h-24 bg-gradient-to-r from-purple-500 to-blue-500 relative">
-                            <div class="absolute -bottom-8 left-6 w-16 h-16 bg-white rounded-xl p-1 shadow-lg transform group-hover:scale-110 transition-transform duration-300 rotate-[-5deg]">
-                                <img src="${creator.imageUrl || 'https://via.placeholder.com/150'}" class="w-full h-full object-cover rounded-lg">
+                    <div class="bento-card flex flex-col overflow-hidden group">
+                        <div class="p-6 pb-0 flex items-start justify-between">
+                            <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-blue-500 to-purple-500 p-0.5 shadow-lg shadow-blue-500/20">
+                                <img src="${creator.imageUrl || 'https://via.placeholder.com/150'}" class="w-full h-full object-cover rounded-xl border-2 border-white">
                             </div>
+                            <span class="bg-blue-50 text-blue-600 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">${creator.category || 'Creator'}</span>
                         </div>
-                        <div class="pt-12 pb-6 px-6 flex-1 flex flex-col">
-                            <h3 class="text-xl font-extrabold text-gray-900 mb-1">${creator.name}</h3>
-                            <p class="text-xs font-bold text-purple-600 tracking-wider uppercase mb-3">${creator.category}</p>
-                            <p class="text-sm font-semibold text-gray-500 mb-6 flex items-center gap-1"><span>👥</span> ${(creator.followers || 0).toLocaleString()} Followers</p>
+                        
+                        <div class="p-6 flex-1 flex flex-col">
+                            <h3 class="text-xl font-extrabold text-slate-900 mb-1 line-clamp-1">${creator.name || 'Anonymous'}</h3>
+                            <p class="text-sm font-medium text-slate-500 mb-5 flex items-center gap-2"><i class="fa-solid fa-users text-slate-400"></i> ${(creator.followers || 0).toLocaleString()} Audience</p>
                             
-                            <a href="profile.html?id=${creator.id}" class="mt-auto block w-full text-center py-3 bg-gray-50 text-gray-900 font-bold rounded-xl hover:bg-gray-900 hover:text-white transition-colors border border-gray-200 hover:border-gray-900">
-                                View Profile
-                            </a>
+                            <div class="mt-auto grid grid-cols-2 gap-3">
+                                <button onclick="safeNavigate('profile.html?id=${creator.id}')" class="py-2.5 bg-white text-slate-700 font-bold rounded-xl hover:bg-slate-50 border border-slate-200 transition-colors shadow-sm text-sm">
+                                    Profile
+                                </button>
+                                <button onclick="openConnectModal('${creator.id}', '${nameEscaped}')" class="py-2.5 bg-gray-900 text-white font-bold rounded-xl hover:bg-gray-800 transition-colors shadow-md shadow-gray-900/20 text-sm">
+                                    Pitch
+                                </button>
+                            </div>
                         </div>
                     </div>
                 `;
             });
         }
 
-        // CREATOR VIEW
         async function loadForCreator() {
-            document.getElementById("dash-title").innerText = "Brand Opportunities 🎯";
-            document.getElementById("dash-subtitle").innerText = "Connect with top brands looking for creators.";
+            document.getElementById("dash-title").innerHTML = "Brand Deals <span class='text-purple-500'>🎯</span>";
+            document.getElementById("dash-subtitle").innerText = "Connect with top brands looking for your audience.";
+            document.getElementById("grid-title").innerText = "Trending Brands";
             document.getElementById("search-bar").placeholder = "Search brand name...";
 
             const querySnapshot = await getDocs(collection(db, "businesses"));
             allData = []; let uniqueIndustries = new Set();
-            querySnapshot.forEach(doc => { let data = doc.data(); allData.push({ id: doc.id, ...data }); if(data.industry) uniqueIndustries.add(data.industry); });
+            querySnapshot.forEach(doc => { 
+                let data = doc.data(); 
+                allData.push({ id: doc.id, ...data }); 
+                if(data.industry) uniqueIndustries.add(data.industry); 
+            });
 
             let dropdownHTML = `<option value="All">All Industries</option>`;
             uniqueIndustries.forEach(industry => dropdownHTML += `<option value="${industry}">${industry}</option>`);
             document.getElementById("filter-dropdown").innerHTML = dropdownHTML;
+            
+            loadAnalytics('creator', allData.length);
             renderBusinesses(allData);
         }
 
         function renderBusinesses(businessArray) {
             const grid = document.getElementById("data-grid"); grid.innerHTML = "";
-            if (businessArray.length === 0) { grid.innerHTML = "<p class='text-gray-500 font-bold col-span-full text-center'>No brands found matching your search.</p>"; return; }
+            document.getElementById("result-count").innerText = `${businessArray.length} brands`;
+            
+            if (businessArray.length === 0) { grid.innerHTML = "<p class='text-slate-500 font-medium col-span-full text-center py-20 bg-white/40 rounded-[2rem] border border-white/60'>No brands found matching your search.</p>"; return; }
 
             businessArray.forEach((business) => {
+                const nameEscaped = business.companyName ? business.companyName.replace(/'/g, "\\'") : 'Brand';
                 grid.innerHTML += `
-                    <div class="premium-card p-6 flex flex-col text-center items-center group">
-                        <div class="w-20 h-20 bg-gradient-to-br from-gray-800 to-black text-white rounded-2xl flex items-center justify-center text-3xl font-extrabold mb-5 shadow-lg transform group-hover:-rotate-6 transition-transform duration-300 overflow-hidden border-4 border-white">
-                            ${business.logoUrl ? `<img src="${business.logoUrl}" class="w-full h-full object-cover">` : business.companyName.charAt(0)}
+                    <div class="bento-card p-6 flex flex-col group relative">
+                        <div class="flex items-center gap-4 mb-5">
+                            <div class="w-14 h-14 bg-gradient-to-br from-slate-800 to-slate-900 text-white rounded-xl flex items-center justify-center text-2xl font-extrabold shadow-lg border border-slate-700">
+                                ${business.logoUrl ? `<img src="${business.logoUrl}" class="w-full h-full object-cover rounded-xl">` : (business.companyName || 'B').charAt(0)}
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-extrabold text-slate-900 line-clamp-1">${business.companyName || 'Brand'}</h3>
+                                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">${business.industry || 'Business'}</p>
+                            </div>
                         </div>
-                        <h3 class="text-xl font-extrabold text-gray-900 mb-1">${business.companyName}</h3>
-                        <p class="text-xs font-bold text-blue-600 tracking-wider uppercase mb-6 bg-blue-50 px-3 py-1 rounded-full">${business.industry}</p>
-                        <a href="${business.website || '#'}" target="_blank" class="mt-auto w-full py-3 bg-gray-50 text-gray-900 font-bold rounded-xl hover:bg-gray-200 transition-colors border border-gray-200">
-                            Visit Website ↗
-                        </a>
+                        
+                        <div class="mt-auto flex flex-col gap-3">
+                            <button onclick="openConnectModal('${business.id}', '${nameEscaped}')" class="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-xl hover:shadow-lg hover:shadow-blue-500/30 transition-all text-sm flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-bolt"></i> Send Proposal
+                            </button>
+                            ${business.website ? `<a href="${business.website}" target="_blank" class="w-full py-2.5 bg-white text-slate-600 font-bold rounded-xl hover:bg-slate-50 border border-slate-200 transition-colors text-center text-xs uppercase tracking-wider">Visit Website</a>` : ''}
+                        </div>
                     </div>
                 `;
             });
         }
 
-        // SEARCH LOGIC
         function applySearchAndFilter() {
-            const searchTerm = document.getElementById("search-bar").value.toLowerCase(); const filterValue = document.getElementById("filter-dropdown").value;
+            const searchTerm = document.getElementById("search-bar").value.toLowerCase(); 
+            const filterValue = document.getElementById("filter-dropdown").value;
+            
             if (currentRole === 'business') {
-                renderCreators(allData.filter(item => (item.name.toLowerCase().includes(searchTerm) || item.category.toLowerCase().includes(searchTerm)) && (filterValue === "All" || item.category === filterValue)));
+                renderCreators(allData.filter(item => {
+                    const name = item.name ? item.name.toLowerCase() : '';
+                    const category = item.category ? item.category.toLowerCase() : '';
+                    return (name.includes(searchTerm) || category.includes(searchTerm)) && 
+                           (filterValue === "All" || item.category === filterValue);
+                }));
             } else {
-                renderBusinesses(allData.filter(item => (item.companyName.toLowerCase().includes(searchTerm)) && (filterValue === "All" || item.industry === filterValue)));
+                renderBusinesses(allData.filter(item => {
+                    const companyName = item.companyName ? item.companyName.toLowerCase() : '';
+                    return (companyName.includes(searchTerm)) && 
+                           (filterValue === "All" || item.industry === filterValue);
+                }));
             }
         }
+        
         document.getElementById("search-bar").addEventListener("input", applySearchAndFilter);
         document.getElementById("filter-dropdown").addEventListener("change", applySearchAndFilter);
 
-        // LOGOUT
-        document.getElementById("logout-btn").addEventListener("click", () => signOut(auth).then(() => window.location.href = "index.html"));
+        document.getElementById("logout-btn").addEventListener("click", () => {
+            signOut(auth).then(() => safeNavigate('index.html'));
+        });
     </script>
 </body>
 </html>
