@@ -9,140 +9,212 @@
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; overflow: hidden; background-color: #f8fafc; }
         
-        .blob {
-            position: absolute; filter: blur(80px); z-index: -1; opacity: 0.6;
-            animation: float 10s infinite ease-in-out alternate;
-        }
-        @keyframes float {
-            0% { transform: translateY(0px) scale(1); }
-            100% { transform: translateY(-50px) scale(1.1); }
-        }
-        .glass-card {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
-        }
-        .text-gradient {
-            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+        .blob { position: absolute; filter: blur(80px); z-index: -1; opacity: 0.6; animation: float 10s infinite ease-in-out alternate; }
+        @keyframes float { 0% { transform: translateY(0px) scale(1); } 100% { transform: translateY(-50px) scale(1.1); } }
+        .glass-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.6); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1); }
+        .text-gradient { background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .ig-gradient { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
     </style>
 </head>
 <body class="flex items-center justify-center min-h-screen relative p-4">
 
-    <!-- Animated Background Blobs -->
     <div class="blob bg-blue-400 w-96 h-96 rounded-full top-[-10%] left-[-10%]"></div>
     <div class="blob bg-purple-400 w-96 h-96 rounded-full bottom-[-10%] right-[-10%]" style="animation-delay: 3s;"></div>
 
-    <div class="glass-card max-w-md w-full rounded-[2rem] p-10 relative z-10">
-        <div class="text-center mb-8">
-            <h1 class="text-4xl font-extrabold text-gradient mb-2 tracking-tight">CreatorMatch.</h1>
-            <p class="text-gray-500 font-semibold text-sm">Join the network of top brands & creators</p>
+    <div class="glass-card max-w-md w-full rounded-[2rem] p-8 relative z-10 max-h-screen overflow-y-auto">
+        <div class="text-center mb-6">
+            <h1 class="text-4xl font-extrabold text-gradient mb-1 tracking-tight cursor-pointer" onclick="safeNavigate('index.html')">CreatorMatch.</h1>
+            <p id="form-subtitle" class="text-gray-500 font-semibold text-sm">Create your account</p>
         </div>
 
-        <div id="auth-form" class="space-y-6">
-            <div>
-                <label class="block text-sm font-extrabold text-gray-700 mb-2 uppercase tracking-wide">Email Address</label>
-                <input type="email" id="email" placeholder="you@example.com" class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:bg-white transition text-sm font-bold shadow-inner">
+        <div id="role-selection" class="mb-4">
+            <label class="block text-xs font-extrabold text-gray-700 mb-2 uppercase tracking-wide text-center">I am joining as a...</label>
+            <div class="flex gap-4">
+                <label class="flex-1 cursor-pointer">
+                    <input type="radio" name="role" value="creator" class="peer hidden" checked>
+                    <div class="text-center py-2 bg-white border-2 border-gray-200 rounded-xl peer-checked:border-purple-500 peer-checked:bg-purple-50 peer-checked:text-purple-700 font-bold transition shadow-sm text-sm">
+                        ✨ Creator
+                    </div>
+                </label>
+                <label class="flex-1 cursor-pointer">
+                    <input type="radio" name="role" value="business" class="peer hidden">
+                    <div class="text-center py-2 bg-white border-2 border-gray-200 rounded-xl peer-checked:border-blue-500 peer-checked:bg-blue-50 peer-checked:text-blue-700 font-bold transition shadow-sm text-sm">
+                        🏢 Brand
+                    </div>
+                </label>
             </div>
+        </div>
+
+        <!-- Social Login Buttons -->
+        <div class="space-y-3 mb-6">
+            <button id="google-btn" class="w-full py-3 bg-white border border-gray-200 text-gray-800 font-bold rounded-xl hover:bg-gray-50 transition shadow-sm flex items-center justify-center gap-3">
+                <svg class="w-5 h-5" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+                Continue with Google
+            </button>
+            <button id="ig-btn" class="w-full py-3 ig-gradient text-white font-bold rounded-xl hover:opacity-90 transition shadow-sm flex items-center justify-center gap-3">
+                <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.88z"/></svg>
+                Continue with Instagram
+            </button>
+        </div>
+
+        <div class="relative flex items-center justify-center mb-6">
+            <div class="border-t border-gray-300 w-full"></div>
+            <span class="bg-white px-3 text-xs font-bold text-gray-400 absolute">OR CONTINUE WITH EMAIL</span>
+        </div>
+
+        <form id="auth-form" class="space-y-4">
             <div>
-                <label class="block text-sm font-extrabold text-gray-700 mb-2 uppercase tracking-wide">Password</label>
-                <input type="password" id="password" placeholder="••••••••" class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:bg-white transition text-sm font-bold shadow-inner">
+                <input type="email" id="email" required placeholder="Email Address" class="w-full px-5 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition text-sm font-bold shadow-inner">
             </div>
 
-            <!-- Role Selection (For Signup) -->
-            <div id="role-selection" class="mb-4">
-                <label class="block text-sm font-extrabold text-gray-700 mb-3 uppercase tracking-wide">I am a...</label>
-                <div class="flex gap-4">
-                    <label class="flex-1 cursor-pointer">
-                        <input type="radio" name="role" value="creator" class="peer hidden" checked>
-                        <div class="text-center py-3 bg-white border-2 border-gray-200 rounded-xl peer-checked:border-purple-500 peer-checked:bg-purple-50 peer-checked:text-purple-700 font-bold transition">
-                            ✨ Creator
-                        </div>
-                    </label>
-                    <label class="flex-1 cursor-pointer">
-                        <input type="radio" name="role" value="business" class="peer hidden">
-                        <div class="text-center py-3 bg-white border-2 border-gray-200 rounded-xl peer-checked:border-blue-500 peer-checked:bg-blue-50 peer-checked:text-blue-700 font-bold transition">
-                            🏢 Brand
-                        </div>
-                    </label>
-                </div>
+            <div>
+                <input type="password" id="password" required placeholder="Password" class="w-full px-5 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition text-sm font-bold shadow-inner">
+                <p class="text-[10px] text-gray-400 mt-1 font-semibold leading-tight" id="password-hint">Min 8 chars, 1 number, 1 letter & 1 special char (@$!%*?&)</p>
             </div>
 
-            <button id="auth-btn" class="w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-extrabold rounded-2xl hover:shadow-lg hover:shadow-purple-500/30 transform hover:-translate-y-0.5 transition-all duration-300 text-lg">
+            <button type="submit" id="submit-btn" class="w-full py-4 bg-gray-900 text-white font-extrabold rounded-xl hover:shadow-lg hover:bg-gray-800 transform hover:-translate-y-0.5 transition-all duration-300 text-lg">
                 Sign Up
             </button>
+        </form>
 
-            <div class="text-center mt-6">
-                <button id="toggle-auth" class="text-gray-500 font-bold hover:text-gray-900 transition underline underline-offset-4">
-                    Already have an account? Login
-                </button>
-            </div>
-            <div class="text-center mt-4">
-                <a href="index.html" class="text-xs font-bold text-gray-400 hover:text-gray-600 transition">← Back to Home</a>
-            </div>
+        <div class="text-center mt-4">
+            <button id="toggle-mode-btn" class="text-sm font-bold text-gray-500 hover:text-purple-600 transition">
+                Already have an account? <span class="underline">Log In</span>
+            </button>
         </div>
     </div>
 
-    <!-- Firebase Script -->
+    <!-- Firebase Scripts (Updated to 11.6.1 with safeNavigate) -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js"; 
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js"; 
 
-        const firebaseConfig = { apiKey: "AIzaSyACcJOwTJrBKKbE56gLtsE8U2JD2VxBIiQ", authDomain: "creatormatch-7c723.firebaseapp.com", projectId: "creatormatch-7c723", storageBucket: "creatormatch-7c723.firebasestorage.app", messagingSenderId: "62514210796", appId: "1:62514210796:web:478775e3e03726693382c9" };
-        const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
+        // Safe Navigation function for sandboxed iframes
+        window.safeNavigate = function(url) {
+            try {
+                if (window.location.href.startsWith('about:') || window.location.href.startsWith('data:')) {
+                    document.body.innerHTML = `
+                        <div class="flex items-center justify-center min-h-screen bg-slate-50 relative z-50">
+                            <div class="bg-white p-10 rounded-[2rem] shadow-2xl text-center max-w-md w-full border border-gray-100">
+                                <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">🔗</div>
+                                <h2 class="text-2xl font-extrabold text-gray-900 mb-2">Navigation Blocked</h2>
+                                <p class="text-gray-500 font-medium mb-6">You are previewing in an iframe. Navigation to <b>${url}</b> is disabled here.</p>
+                                <button onclick="location.reload()" class="w-full py-3 bg-gray-900 text-white rounded-xl font-bold">Refresh Page</button>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+                window.location.href = url;
+            } catch (error) {
+                console.error("Navigation error:", error);
+            }
+        };
 
-        let isSignup = true;
-        const emailInput = document.getElementById("email");
-        const passwordInput = document.getElementById("password");
-        const authBtn = document.getElementById("auth-btn");
-        const toggleBtn = document.getElementById("toggle-auth");
-        const roleSelection = document.getElementById("role-selection");
+        const firebaseConfig = { 
+            apiKey: "AIzaSyACcJOwTJrBKKbE56gLtsE8U2JD2VxBIiQ", 
+            authDomain: "creatormatch-7c723.firebaseapp.com", 
+            projectId: "creatormatch-7c723", 
+            storageBucket: "creatormatch-7c723.firebasestorage.app", 
+            messagingSenderId: "62514210796", 
+            appId: "1:62514210796:web:478775e3e03726693382c9" 
+        };
+        
+        const app = initializeApp(firebaseConfig); 
+        const auth = getAuth(app); 
+        const db = getFirestore(app);
+        const googleProvider = new GoogleAuthProvider();
 
-        toggleBtn.addEventListener("click", () => {
-            isSignup = !isSignup;
-            if(isSignup) {
-                authBtn.innerText = "Sign Up";
-                toggleBtn.innerText = "Already have an account? Login";
-                roleSelection.style.display = "block";
+        let isLoginMode = false;
+        const form = document.getElementById('auth-form');
+        const toggleBtn = document.getElementById('toggle-mode-btn');
+        const roleSelection = document.getElementById('role-selection');
+        const submitBtn = document.getElementById('submit-btn');
+        const subtitle = document.getElementById('form-subtitle');
+        const passwordHint = document.getElementById('password-hint');
+
+        // Toggle UI
+        toggleBtn.addEventListener('click', () => {
+            isLoginMode = !isLoginMode;
+            if (isLoginMode) {
+                roleSelection.classList.add('hidden');
+                submitBtn.innerText = "Log In"; subtitle.innerText = "Welcome back!";
+                passwordHint.classList.add('hidden');
+                toggleBtn.innerHTML = `New here? <span class="underline">Sign Up</span>`;
             } else {
-                authBtn.innerText = "Login";
-                toggleBtn.innerText = "New here? Create an account";
-                roleSelection.style.display = "none";
+                roleSelection.classList.remove('hidden');
+                submitBtn.innerText = "Sign Up"; subtitle.innerText = "Create your account";
+                passwordHint.classList.remove('hidden');
+                toggleBtn.innerHTML = `Already have an account? <span class="underline">Log In</span>`;
             }
         });
 
-        authBtn.addEventListener("click", async () => {
-            const email = emailInput.value; const password = passwordInput.value;
-            if(!email || !password) return alert("Please enter email and password!");
-            
-            authBtn.innerText = "Processing..."; authBtn.disabled = true;
-
+        // 1. Google Login Logic
+        document.getElementById('google-btn').addEventListener('click', async () => {
             try {
-                if(isSignup) {
-                    const selectedRole = document.querySelector('input[name="role"]:checked').value;
-                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                    const user = userCredential.user;
+                const result = await signInWithPopup(auth, googleProvider);
+                const user = result.user;
+                
+                // Check if user already exists in DB
+                const userDoc = await getDoc(doc(db, "users", user.uid));
+                if(!userDoc.exists()) {
+                    // New User - read the radio button to save role
+                    const role = document.querySelector('input[name="role"]:checked').value;
+                    await setDoc(doc(db, "users", user.uid), { email: user.email, role: role, uid: user.uid });
                     
-                    await setDoc(doc(db, "users", user.uid), { email: user.email, role: selectedRole, uid: user.uid });
-                    
-                    if(selectedRole === 'creator') window.location.href = "setup.html";
+                    if(role === 'creator') safeNavigate("setup.html");
                     else {
-                        await setDoc(doc(db, "businesses", user.uid), { companyName: "My Brand", industry: "General", uid: user.uid });
-                        window.location.href = "dashboard.html";
+                        await setDoc(doc(db, "businesses", user.uid), { companyName: user.displayName || "My Brand", industry: "General", uid: user.uid });
+                        safeNavigate("dashboard.html");
                     }
                 } else {
+                    // Existing User
+                    safeNavigate("dashboard.html");
+                }
+            } catch (error) {
+                alert("Google Sign In Failed: " + error.message);
+            }
+        });
+
+        // 2. Instagram Login (Mock UI)
+        document.getElementById('ig-btn').addEventListener('click', () => {
+            alert("Instagram API requires Facebook Developer Business Verification. Please use 'Continue with Google' or Email for now!");
+        });
+
+        // 3. Email/Password Submit
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+
+            if (!isLoginMode) {
+                const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+                if (!passwordRegex.test(password)) return alert("⚠️ Password must be at least 8 characters long, and contain a letter, a number, and a special character.");
+            }
+
+            submitBtn.innerText = "Please wait..."; submitBtn.disabled = true;
+
+            try {
+                if (isLoginMode) {
                     await signInWithEmailAndPassword(auth, email, password);
-                    window.location.href = "dashboard.html";
+                    safeNavigate("dashboard.html");
+                } else {
+                    const role = document.querySelector('input[name="role"]:checked').value;
+                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                    const user = userCredential.user;
+
+                    await setDoc(doc(db, "users", user.uid), { email: user.email, role: role, uid: user.uid });
+                    
+                    if(role === 'creator') safeNavigate("setup.html");
+                    else {
+                        await setDoc(doc(db, "businesses", user.uid), { companyName: "My Brand", industry: "General", uid: user.uid });
+                        safeNavigate("dashboard.html");
+                    }
                 }
             } catch (error) {
                 alert("Error: " + error.message);
-                authBtn.innerText = isSignup ? "Sign Up" : "Login";
-                authBtn.disabled = false;
+                submitBtn.innerText = isLoginMode ? "Log In" : "Sign Up"; submitBtn.disabled = false;
             }
         });
     </script>
